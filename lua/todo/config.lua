@@ -26,15 +26,15 @@ local defaults = {
       color = "error",
       alt = { "FIXME", "BUG", "FIXIT", "FIX", "ISSUE" },
     },
-    HACK = { icon = " ", color = "warning" },
+    HACK = { icon = " ", color = "warning" },
     WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
     PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
     NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
   },
   highlight = {
-    before = "", -- "fg" or "bg" or false
-    tag = "wide", -- "fg", "bg" or "wide". (wide is the same as bg, but will also highlight surrounding characters)
-    after = "fg", -- "fg" or "bg" or false
+    before = "", -- "fg" or "bg" or empty
+    tag = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
+    after = "fg", -- "fg" or "bg" or empty
   },
 }
 
