@@ -2,8 +2,8 @@
 local M = {}
 
 function M.get_hl(name)
-  if not vim.fn.hlexists(name) then return nil end
-  local hl = vim.api.nvim_get_hl_by_name(name, true)
+  local ok, hl = pcall(vim.api.nvim_get_hl_by_name, name, true)
+  if not ok then return  end
   for _, key in pairs({ "foreground", "background", "special" }) do
     if hl[key] then hl[key] = string.format("#%06x", hl[key]) end
   end

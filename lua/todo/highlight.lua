@@ -112,16 +112,10 @@ function M.attach(win)
   if not M.bufs[buf] then
     vim.api.nvim_buf_attach(buf, false, {
       on_lines = function(event, buf, tick, first, last, last_new)
-        print("line")
         -- HACK: use defer, because after an undo, nvim_buf_get_lines returns lines before undo
         vim.defer_fn(function() M.highlight(buf, first, last_new) end, 0)
       end,
-      on_reload = function() print("reload") end,
-      on_changedtick = function() print("changed") end,
-      on_detach = function()
-        print("detached")
-        M.bufs[buf] = nil
-      end,
+      on_detach = function() M.bufs[buf] = nil end,
     })
     M.bufs[buf] = true
     M.highlight_win(win)
@@ -139,7 +133,7 @@ function M.start()
       autocmd!
       autocmd BufWinEnter * lua require("todo.highlight").attach()
       autocmd WinScrolled * lua require("todo.highlight").highlight_win()
-      autocmd ColorScheme * lua require("todo.config").colors()
+      autocmd ColorScheme * lua vim.defer_fn(require("todo.config").colors, 10)
     augroup end
   ]], false)
 

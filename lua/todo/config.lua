@@ -38,8 +38,15 @@ local defaults = {
   },
 }
 
+M._options = nil
+
 function M.setup(options)
-  M.options = vim.tbl_deep_extend("force", {}, defaults, options or {})
+  M._options = options
+  vim.cmd [[autocmd BufReadPre * ++once lua require("todo.config")._setup()]]
+end
+
+function M._setup()
+  M.options = vim.tbl_deep_extend("force", {}, defaults, M._options or {})
 
   for kw, opts in pairs(M.options.keywords) do
     M.keywords[kw] = kw
@@ -49,6 +56,7 @@ function M.setup(options)
   M.rg_regex = "(" .. tags .. "):"
   M.colors()
   M.signs()
+  require("todo.highlight").start()
 end
 
 function M.signs()

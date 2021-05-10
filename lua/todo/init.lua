@@ -2,10 +2,7 @@ local Config = require("todo.config")
 
 local M = {}
 
-function M.setup(opts)
-  Config.setup(opts)
-  require("todo.highlight").start()
-end
+M.setup = Config.setup
 
 function M.reset()
   require("plenary.reload").reload_module("todo")
