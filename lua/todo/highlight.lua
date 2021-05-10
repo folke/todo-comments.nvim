@@ -131,7 +131,8 @@ function M.start()
   vim.api.nvim_exec([[
     augroup Todo
       autocmd!
-      autocmd BufWinEnter * lua require("todo.highlight").attach()
+      autocmd BufWinEnter,WinNew * lua require("todo.highlight").attach()
+      autocmd BufWritePost * silent! lua require'trouble'.refresh({auto = true, provider = "todo"})
       autocmd WinScrolled * lua require("todo.highlight").highlight_win()
       autocmd ColorScheme * lua vim.defer_fn(require("todo.config").colors, 10)
     augroup end
