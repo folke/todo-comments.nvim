@@ -1,4 +1,4 @@
-local Util = require("todo.util")
+local Util = require("todo-comments.util")
 
 --- @class Config
 local M = {}
@@ -42,7 +42,7 @@ M._options = nil
 
 function M.setup(options)
   M._options = options
-  vim.cmd [[autocmd BufReadPre * ++once lua require("todo.config")._setup()]]
+  vim.cmd [[autocmd VimEnter * ++once lua require("todo-comments.config")._setup()]]
 end
 
 function M._setup()
@@ -56,7 +56,7 @@ function M._setup()
   M.rg_regex = "(" .. tags .. "):"
   M.colors()
   M.signs()
-  require("todo.highlight").start()
+  require("todo-comments.highlight").start()
 end
 
 function M.signs()

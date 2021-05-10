@@ -1,4 +1,4 @@
-local Config = require("todo.config")
+local Config = require("todo-comments.config")
 
 local M = {}
 M.bufs = {}
@@ -93,25 +93,53 @@ function M.highlight(buf, first, last)
 end
 
 -- highlights the visible range of the window
-function M.highlight_win(win)
+function M.highlight_win(win, force)
   win = win or vim.api.nvim_get_current_win()
+  if force ~= true and not M.is_valid_win(win) then return end
+
   local current_win = vim.api.nvim_get_current_win()
   vim.api.nvim_set_current_win(win)
+
   local buf = vim.api.nvim_win_get_buf(win)
   local first = vim.fn.line("w0") - 1
   local last = vim.fn.line("w$")
   M.highlight(buf, first, last)
+
   vim.api.nvim_set_current_win(current_win)
+end
+
+function M.is_float(win)
+  local opts = vim.api.nvim_win_get_config(win)
+  return opts and opts.relative and opts.relative ~= ""
+end
+
+function M.is_valid_win(win)
+  if not vim.api.nvim_win_is_valid(win) then return false end
+  -- dont do anything for floating windows
+  if M.is_float(win) then return false end
+  local buf = vim.api.nvim_win_get_buf(win)
+  return M.is_valid_buf(buf)
+end
+
+function M.is_valid_buf(buf)
+  -- Skip special buffers
+  if vim.api.nvim_buf_get_option(buf, "buftype") ~= "" then return false end
+  return true
 end
 
 -- will attach to the buf in the window and highlight the active buf if needed
 function M.attach(win)
   win = win or vim.api.nvim_get_current_win()
+  if not M.is_valid_win(win) then return end
+
   local buf = vim.api.nvim_win_get_buf(win)
 
   if not M.bufs[buf] then
     vim.api.nvim_buf_attach(buf, false, {
       on_lines = function(event, buf, tick, first, last, last_new)
+        -- detach from this buffer in case we no longer want it
+        if not M.is_valid_buf(buf) then return true end
+
         -- HACK: use defer, because after an undo, nvim_buf_get_lines returns lines before undo
         vim.defer_fn(function() M.highlight(buf, first, last_new) end, 0)
       end,
@@ -119,8 +147,8 @@ function M.attach(win)
     })
     M.bufs[buf] = true
     M.highlight_win(win)
-  end
-  if not M.wins[win] then
+    M.wins[win] = true
+  elseif not M.wins[win] then
     M.highlight_win(win)
     M.wins[win] = true
   end
@@ -131,10 +159,10 @@ function M.start()
   vim.api.nvim_exec([[
     augroup Todo
       autocmd!
-      autocmd BufWinEnter,WinNew * lua require("todo.highlight").attach()
+      autocmd BufWinEnter,WinNew * lua require("todo-comments.highlight").attach()
       autocmd BufWritePost * silent! lua require'trouble'.refresh({auto = true, provider = "todo"})
-      autocmd WinScrolled * lua require("todo.highlight").highlight_win()
-      autocmd ColorScheme * lua vim.defer_fn(require("todo.config").colors, 10)
+      autocmd WinScrolled * lua require("todo-comments.highlight").highlight_win()
+      autocmd ColorScheme * lua vim.defer_fn(require("todo-comments.config").colors, 10)
     augroup end
   ]], false)
 

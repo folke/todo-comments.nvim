@@ -1,6 +1,6 @@
 local uv = vim.loop
-local Config = require("todo.config")
-local Highlight = require("todo.highlight")
+local Config = require("todo-comments.config")
+local Highlight = require("todo-comments.highlight")
 
 local M = {}
 
@@ -63,7 +63,7 @@ function M.setqflist(opts)
     vim.fn.setqflist({}, " ", { title = "Todo", id = "$", items = results })
     if opts.open then vim.cmd [[copen]] end
     local win = vim.fn.getqflist({ winid = true })
-    if win.winid ~= 0 then Highlight.highlight_win(win.winid) end
+    if win.winid ~= 0 then Highlight.highlight_win(win.winid, true) end
   end)
 end
 

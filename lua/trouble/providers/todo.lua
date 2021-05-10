@@ -1,6 +1,6 @@
-local Search = require("todo.search")
+local Search = require("todo-comments.search")
 local util = require("trouble.util")
-local Config = require("todo.config")
+local Config = require("todo-comments.config")
 
 local function todo(win, buf, cb, options)
   Search.search(function(results)
@@ -24,7 +24,8 @@ local function todo(win, buf, cb, options)
         },
       }
 
-      table.insert(ret, util.process_item(pitem, vim.fn.bufnr(item.filename)))
+      table.insert(ret,
+                   util.process_item(pitem, vim.fn.bufnr(item.filename, true)))
     end
     if #ret == 0 then util.warn("no todos found") end
     cb(ret)
