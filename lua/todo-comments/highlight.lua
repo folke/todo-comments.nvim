@@ -123,7 +123,8 @@ end
 
 function M.is_valid_buf(buf)
   -- Skip special buffers
-  if vim.api.nvim_buf_get_option(buf, "buftype") ~= "" then return false end
+  local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+  if (buftype ~= "" and buftype ~= "quickfix") then return false end
   return true
 end
 
