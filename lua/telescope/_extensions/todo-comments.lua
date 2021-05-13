@@ -18,8 +18,7 @@ local function todo(opts)
   opts.entry_maker = function(line)
     local ret = entry_maker(line)
     ret.display = function(entry)
-      local display = string.format("%s:%s:%s ", entry.filename, entry.lnum,
-                                    entry.col)
+      local display = string.format("%s:%s:%s ", entry.filename, entry.lnum, entry.col)
       local text = entry.text
       local start, finish, kw = Highlight.match(text)
 
@@ -50,4 +49,4 @@ local function todo(opts)
   pickers.grep_string(opts)
 end
 
-return telescope.register_extension { exports = { todo = todo } }
+return telescope.register_extension({ exports = { todo = todo } })

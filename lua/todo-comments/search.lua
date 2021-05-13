@@ -24,12 +24,16 @@ function M.search(cb)
   }
 
   uv.spawn("rg", opts, function()
-    if not stdout:is_closing() then stdout:close() end
+    if not stdout:is_closing() then
+      stdout:close()
+    end
     cb(results)
   end)
 
   stdout:read_start(function(err, data, is_complete)
-    if err or not data or is_complete then return end
+    if err or not data or is_complete then
+      return
+    end
     data = data:gsub("\r", "")
     for _, line in pairs(vim.split(data, "\n", true)) do
       if line ~= "" then
@@ -61,9 +65,13 @@ function M.setqflist(opts)
   opts = opts or { open = true }
   M.search(function(results)
     vim.fn.setqflist({}, " ", { title = "Todo", id = "$", items = results })
-    if opts.open then vim.cmd [[copen]] end
+    if opts.open then
+      vim.cmd([[copen]])
+    end
     local win = vim.fn.getqflist({ winid = true })
-    if win.winid ~= 0 then Highlight.highlight_win(win.winid, true) end
+    if win.winid ~= 0 then
+      Highlight.highlight_win(win.winid, true)
+    end
   end)
 end
 
