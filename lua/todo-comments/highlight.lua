@@ -173,15 +173,13 @@ function M.start()
   -- setup autocmds
   -- TODO: make some of the below configurable
   vim.api.nvim_exec(
-    [[
-    augroup Todo
-      autocmd!
-      autocmd BufWinEnter,WinNew * lua require("todo-comments.highlight").attach()
-      autocmd BufWritePost * silent! lua require'trouble'.refresh({auto = true, provider = "todo"})
-      autocmd WinScrolled * lua require("todo-comments.highlight").highlight_win()
-      autocmd ColorScheme * lua vim.defer_fn(require("todo-comments.config").colors, 10)
-    augroup end
-  ]],
+    [[augroup Todo
+        autocmd!
+        autocmd BufWinEnter,WinNew * lua require("todo-comments.highlight").attach()
+        autocmd BufWritePost * silent! lua require'trouble'.refresh({auto = true, provider = "todo"})
+        autocmd WinScrolled * lua require("todo-comments.highlight").highlight_win()
+        autocmd ColorScheme * lua vim.defer_fn(require("todo-comments.config").colors, 10)
+      augroup end]],
     false
   )
 
