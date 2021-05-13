@@ -45,6 +45,11 @@ local defaults = {
     hint = { "LspDiagnosticsDefaultHint", "#10B981" },
     default = { "Identifier", "#7C3AED" },
   },
+  -- regex that will be used to match keywords.
+  -- don't replace the (KEYWORDS) placeholder
+  pattern = "(KEYWORDS):",
+  -- pattern = "(KEYWORDS)", -- match without the extra colon. You'll likely get false positives
+  -- pattern = "-- (KEYWORDS):", -- only match in lua comments
 }
 
 M._options = nil
@@ -74,7 +79,7 @@ function M._setup()
     end
   end
   local tags = table.concat(vim.tbl_keys(M.keywords), "|")
-  M.rg_regex = "(" .. tags .. "):"
+  M.rg_regex = M.options.pattern:gsub("KEYWORDS", tags)
   M.colors()
   M.signs()
   require("todo-comments.highlight").start()

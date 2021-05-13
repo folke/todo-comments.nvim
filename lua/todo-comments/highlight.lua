@@ -10,13 +10,14 @@ M.wins = {}
 -- NOTE: adding a note
 -- FIX: this needs fixing
 -- WARNING: ???
+-- FIX ddddd
 
 function M.match(str)
-  for kw in pairs(Config.keywords) do
-    local start, finish = str:find("(" .. kw .. "):")
-    if start then
-      return start, finish, kw
-    end
+  local m = vim.fn.matchlist(str, "\\v\\C" .. Config.rg_regex)
+  if m and m[2] then
+    local kw = m[2]
+    local start = str:find(kw)
+    return start, start + #kw, kw
   end
 end
 
@@ -38,11 +39,15 @@ function M.highlight(buf, first, last)
     local start, finish, kw = M.match(line)
     local lnum = first + l - 1
 
-    if start then
+    if kw then
+      kw = Config.keywords[kw] or kw
+    end
+
+    local opts = Config.options.keywords[kw]
+
+    if opts then
       start = start - 1
       finish = finish - 1
-      kw = Config.keywords[kw] or kw
-      local opts = Config.options.keywords[kw]
 
       local hl_fg = "TodoFg" .. kw
       local hl_bg = "TodoBg" .. kw
