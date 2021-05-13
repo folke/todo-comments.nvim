@@ -17,6 +17,7 @@
 ## ⚡️ Requirements
 
 * Neovim >= 0.5.0
+* [ripgrep](https://github.com/BurntSushi/ripgrep) is used for searching.
 * a [patched font](https://www.nerdfonts.com/) for the icons, or change them to simple ASCII characters
 * optional:
   - [Trouble](https://github.com/folke/trouble.nvim)
