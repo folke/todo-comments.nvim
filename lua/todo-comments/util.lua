@@ -29,4 +29,19 @@ function M.is_dark(hex)
   return lum <= 0.5
 end
 
+function M.log(msg, hl)
+  vim.api.nvim_echo({ { "Todo: ", hl }, { msg } }, true, {})
+end
+
+function M.warn(msg)
+  M.log(msg, "WarningMsg")
+end
+
+function M.error(msg)
+  vim.api.nvim_echo({
+    { "Todo: ", "Error" },
+    { msg },
+  }, true, {})
+end
+
 return M

@@ -4,18 +4,12 @@ local M = {}
 M.bufs = {}
 M.wins = {}
 
--- PERF: folke was here
--- HACK: ..
--- TODO: dsadasd
--- PERF: dsdasds
--- NOTE: dddd
--- XXX: dsaasdd
--- FIXME: dddd
--- FIX: asdasd
--- TODO: dooo
--- WARN: dadads
--- TODO: dasdasdas
--- WARNING: dasdasdas
+-- PERF: fully optimised
+-- HACK: hmmm, this looks a bit funky
+-- TODO: What else?
+-- NOTE: adding a note
+-- FIX: this needs fixing
+-- WARNING: ???
 
 function M.match(str)
   for kw in pairs(Config.keywords) do

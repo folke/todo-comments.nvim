@@ -1,6 +1,7 @@
 local uv = vim.loop
 local Config = require("todo-comments.config")
 local Highlight = require("todo-comments.highlight")
+local Util = require("todo-comments.util")
 
 local M = {}
 
@@ -8,7 +9,8 @@ function M.search(cb)
   cb = vim.schedule_wrap(cb)
   local stdin = nil
   local stdout = uv.new_pipe(false)
-  local stderr = nil
+  local stderr = uv.new_pipe(false)
+  local error = ""
   local results = {}
 
   local opts = {
@@ -27,7 +29,21 @@ function M.search(cb)
     if not stdout:is_closing() then
       stdout:close()
     end
+    if not stderr:is_closing() then
+      stderr:close()
+    end
+    if error ~= "" then
+      vim.defer_fn(function()
+        Util.error("rg failed: " .. error)
+      end, 10)
+    end
     cb(results)
+  end)
+
+  stderr:read_start(function(err, data, is_complete)
+    if data then
+      error = error .. data
+    end
   end)
 
   stdout:read_start(function(err, data, is_complete)
@@ -74,5 +90,7 @@ function M.setqflist(opts)
     end
   end)
 end
+
+M.setqflist()
 
 return M
