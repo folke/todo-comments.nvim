@@ -36,6 +36,8 @@ local defaults = {
     keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
     after = "fg", -- "fg" or "bg" or empty
   },
+  -- list of named colors where we try to extract the guifg from the
+  -- list of hilight groups or use the hex color if hl not found as a fallback
   colors = {
     error = { "LspDiagnosticsDefaultError", "ErrorMsg", "#DC2626" },
     warning = { "LspDiagnosticsDefaultWarning", "WarningMsg", "#FBBF24" },
@@ -49,9 +51,12 @@ M._options = nil
 
 function M.setup(options)
   M._options = options
-  -- TODO: only lazyload when vim is not ready yet
   -- lazy load setup after VimEnter
-  vim.cmd([[autocmd VimEnter * ++once lua require("todo-comments.config")._setup()]])
+  if vim.api.nvim_get_vvar("vim_did_enter") == 0 then
+    vim.cmd([[autocmd VimEnter * ++once lua require("todo-comments.config")._setup()]])
+  else
+    M._setup()
+  end
 end
 
 function M._setup()
