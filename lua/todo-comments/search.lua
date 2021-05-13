@@ -91,6 +91,4 @@ function M.setqflist(opts)
   end)
 end
 
-M.setqflist()
-
 return M
