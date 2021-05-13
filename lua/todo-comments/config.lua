@@ -48,7 +48,8 @@ local defaults = {
   },
   -- regex that will be used to match keywords.
   -- don't replace the (KEYWORDS) placeholder
-  pattern = "(KEYWORDS):",
+  rg_pattern = '\\b(KEYWORDS):', -- rust regex
+  hl_pattern = '<(KEYWORDS)>:', -- viml regex, this substitudes %s inside commentstring option
   -- pattern = "(KEYWORDS)", -- match without the extra colon. You'll likely get false positives
   -- pattern = "-- (KEYWORDS):", -- only match in lua comments
 }
@@ -80,7 +81,8 @@ function M._setup()
     end
   end
   local tags = table.concat(vim.tbl_keys(M.keywords), "|")
-  M.rg_regex = M.options.pattern:gsub("KEYWORDS", tags)
+  M.rg_regex = M.options.rg_pattern:gsub("KEYWORDS", tags)
+  M.hl_regex = M.options.hl_pattern:gsub("KEYWORDS", tags)
   M.colors()
   M.signs()
   require("todo-comments.highlight").start()
