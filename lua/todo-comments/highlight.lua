@@ -175,7 +175,9 @@ function M.start()
     [[augroup Todo
         autocmd!
         autocmd BufWinEnter,WinNew * lua require("todo-comments.highlight").attach()
-        autocmd BufWritePost * silent! lua require'trouble'.refresh({auto = true, provider = "todo"})
+        if luaeval('pcall(require, "trouble")')
+            autocmd BufWritePost * silent! lua require'trouble'.refresh({auto = true, provider = "todo"})
+        endif
         autocmd WinScrolled * lua require("todo-comments.highlight").highlight_win()
         autocmd ColorScheme * lua vim.defer_fn(require("todo-comments.config").colors, 10)
       augroup end]],

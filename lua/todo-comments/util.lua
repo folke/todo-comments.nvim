@@ -44,4 +44,11 @@ function M.error(msg)
   }, true, {})
 end
 
+function M.warn(msg)
+  vim.api.nvim_echo({
+    {"Todo: ", "Warn"},
+    {msg, 'WarningMsg'},
+  }, true, {})
+end
+
 return M

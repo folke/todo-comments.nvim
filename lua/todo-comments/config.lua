@@ -83,6 +83,11 @@ function M._setup()
   M.rg_regex = M.options.pattern:gsub("KEYWORDS", tags)
   M.colors()
   M.signs()
+  if vim.fn.executable('rg') == 1 then
+    require("todo-comments.commands")
+  else
+    Util.warn("Missing ripgrep, commands are not available")
+  end
   require("todo-comments.highlight").start()
   M.loaded = true
 end
