@@ -67,6 +67,11 @@ function M.search(cb)
         Util.error("ripgrep failed with code " .. code)
       end, 10)
     end
+    if code == 1 then
+      vim.defer_fn(function()
+        Util.warn("no todos found")
+      end, 10)
+    end
 
     vim.schedule_wrap(function()
       cb(M.process(lines))
