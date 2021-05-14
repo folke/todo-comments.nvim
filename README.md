@@ -87,6 +87,8 @@ Todo comes with the following defaults:
     before = "", -- "fg" or "bg" or empty
     keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
     after = "fg", -- "fg" or "bg" or empty
+    pattern = '<(KEYWORDS)>:', -- vim regex
+    comments_only = true, -- this applies the pattern only inside comments using `commentstring` option
   },
   -- list of named colors where we try to extract the guifg from the
   -- list of hilight groups or use the hex color if hl not found as a fallback
@@ -97,12 +99,21 @@ Todo comes with the following defaults:
     hint = { "LspDiagnosticsDefaultHint", "#10B981" },
     default = { "Identifier", "#7C3AED" },
   },
-  -- regex that will be used to match keywords.
-  -- don't replace the (KEYWORDS) placeholder
-  rg_pattern = '\\b(KEYWORDS):', -- rust regex
-  hl_pattern = '<(KEYWORDS)>:', -- viml regex, this substitudes %s inside commentstring option
-  -- rg_pattern = "(KEYWORDS)", -- match without the extra colon. You'll likely get false positives
-  -- rg_pattern = "-- (KEYWORDS):", -- only match in lua comments
+  search = {
+    tool = 'rg',
+    args = {
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+    },
+    -- regex that will be used to match keywords.
+    -- don't replace the (KEYWORDS) placeholder
+    pattern = '\\b(KEYWORDS):', -- ripgrep regex
+    -- pattern = "(KEYWORDS)", -- match without the extra colon. You'll likely get false positives
+    -- pattern = "-- (KEYWORDS):", -- only match in lua comments
+  },
 }
 ```
 

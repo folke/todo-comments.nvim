@@ -37,8 +37,8 @@ function M.search(cb)
     return
   end
 
-  if vim.fn.executable("rg") ~= 1 then
-    Util.error("rg (ripgrep) was not found on your path")
+  if vim.fn.executable(Config.options.search.tool) ~= 1 then
+    Util.error(Config.search.tool.." was not found on your path")
     return
   end
 
@@ -49,18 +49,12 @@ function M.search(cb)
   local lines = {}
 
   local opts = {
-    args = {
-      "--color=never",
-      "--no-heading",
-      "--with-filename",
-      "--line-number",
-      "--column",
-      Config.rg_regex,
-    },
+    args = vim.deepcopy(Config.options.search.args),
     stdio = { stdin, stdout, stderr },
   }
+  vim.list_extend(opts.args, {Config.search_regex})
 
-  uv.spawn("rg", opts, function(code, _signal)
+  uv.spawn(Config.options.search.tool, opts, function(code, signal)
     if not stdout:is_closing() then
       stdout:close()
     end
@@ -70,7 +64,7 @@ function M.search(cb)
     if code == 2 then
       vim.defer_fn(function()
         Util.error(error)
-        Util.error("ripgrep failed with code " .. code)
+        Util.error(Config.search.tool.." failed with code " .. code)
       end, 10)
     end
     if code == 1 then

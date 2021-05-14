@@ -35,11 +35,14 @@ function M.highlight(buf, first, last)
   end
 
   local lines = vim.api.nvim_buf_get_lines(buf, first, last + 1, false)
-  local comment_str = vim.bo.commentstring:gsub('%s+', '')
-  comment_str = vim.fn.escape(comment_str, '*+?')
-  local wrap = comment_str:sub(#comment_str - 1, #comment_str) ~= '%s'
-  local pattern = comment_str:gsub('%%s', [[\s*]]..(wrap and Config.hl_regex..'.*' or Config.hl_regex))
-  pattern = vim.fn.escape(pattern, '%')
+
+  local pattern
+  if Config.options.highlight.comments_only then
+    local comment_str = vim.bo.commentstring:gsub('%s+', '')
+    comment_str = vim.fn.escape(comment_str, '*+?')
+    pattern = comment_str:gsub('%%s', [[\s*]]..Config.hl_regex..'.*')
+    pattern = vim.fn.escape(pattern, '%')
+  end
 
   for l, line in ipairs(lines) do
     local start, finish, kw = M.match(line, pattern)
