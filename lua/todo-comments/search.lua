@@ -50,14 +50,14 @@ function M.search(cb)
     stdio = { stdin, stdout, stderr },
   }
 
-  uv.spawn("rg", opts, function(code, signal)
+  uv.spawn("rg", opts, function(code, _signal)
     if not stdout:is_closing() then
       stdout:close()
     end
     if not stderr:is_closing() then
       stderr:close()
     end
-    if code ~= 0 then
+    if code == 2 then
       vim.defer_fn(function()
         Util.error(error)
         Util.error("ripgrep failed with code " .. code)
@@ -69,7 +69,7 @@ function M.search(cb)
     end)()
   end)
 
-  stderr:read_start(function(err, data, is_complete)
+  stderr:read_start(function(_err, data, _is_complete)
     if data then
       error = error .. data
     end
