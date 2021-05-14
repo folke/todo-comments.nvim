@@ -99,9 +99,10 @@ Todo comes with the following defaults:
   },
   -- regex that will be used to match keywords.
   -- don't replace the (KEYWORDS) placeholder
-  pattern = "(KEYWORDS):",
-  -- pattern = "(KEYWORDS)", -- match without the extra colon. You'll likely get false positives
-  -- pattern = "-- (KEYWORDS):", -- only match in lua comments
+  rg_pattern = '\\b(KEYWORDS):', -- rust regex
+  hl_pattern = '<(KEYWORDS)>:', -- viml regex, this substitudes %s inside commentstring option
+  -- rg_pattern = "(KEYWORDS)", -- match without the extra colon. You'll likely get false positives
+  -- rg_pattern = "-- (KEYWORDS):", -- only match in lua comments
 }
 ```
 
