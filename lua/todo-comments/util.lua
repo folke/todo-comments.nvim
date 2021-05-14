@@ -38,10 +38,7 @@ function M.warn(msg)
 end
 
 function M.error(msg)
-  vim.api.nvim_echo({
-    { "Todo: ", "Error" },
-    { msg },
-  }, true, {})
+  M.log(msg, "ErrorMsg")
 end
 
 return M
