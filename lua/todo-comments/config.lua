@@ -96,8 +96,8 @@ end
 
 function M.colors()
   local normal = Util.get_hl("Normal")
-  local fg_dark = Util.is_dark(normal.foreground) and normal.foreground or normal.background
-  local fg_light = Util.is_dark(normal.foreground) and normal.background or normal.foreground
+  local fg_dark = Util.is_dark(normal.foreground or "#ffffff") and normal.foreground or normal.background
+  local fg_light = Util.is_dark(normal.foreground or "#ffffff") and normal.background or normal.foreground
   fg_dark = fg_dark or "#000000"
   fg_light = fg_light or "#ffffff"
 
