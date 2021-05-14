@@ -1,15 +1,16 @@
 local Util = require("todo-comments.util")
 
---- @class Config
+--- @class TodoConfig
 local M = {}
 
 M.keywords = {}
---- @type Options
+--- @type TodoOptions
 M.options = {}
+M.loaded = false
 
 M.ns = vim.api.nvim_create_namespace("todo-comments")
 
---- @class Options
+--- @class TodoOptions
 -- TODO: add support for markdown todos
 local defaults = {
   signs = true, -- show icons in the signs column
@@ -83,6 +84,7 @@ function M._setup()
   M.colors()
   M.signs()
   require("todo-comments.highlight").start()
+  M.loaded = true
 end
 
 function M.signs()

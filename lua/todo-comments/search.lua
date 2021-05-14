@@ -32,6 +32,10 @@ function M.process(lines)
 end
 
 function M.search(cb)
+  if not Config.loaded then
+    Util.error("todo-comments isn't loaded. Did you run setup()?")
+    return
+  end
   local stdin = nil
   local stdout = uv.new_pipe(false)
   local stderr = uv.new_pipe(false)
