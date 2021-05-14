@@ -36,6 +36,12 @@ function M.search(cb)
     Util.error("todo-comments isn't loaded. Did you run setup()?")
     return
   end
+
+  if vim.fn.executable("rg") ~= 1 then
+    Util.error("rg (ripgrep) was not found on your path")
+    return
+  end
+
   local stdin = nil
   local stdout = uv.new_pipe(false)
   local stderr = uv.new_pipe(false)
