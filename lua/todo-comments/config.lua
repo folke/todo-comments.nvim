@@ -89,7 +89,7 @@ function M.signs()
   for kw, opts in pairs(M.options.keywords) do
     vim.fn.sign_define("todo-sign-" .. kw, {
       text = opts.icon,
-      texthl = "TodoFg" .. kw,
+      texthl = "TodoSign" .. kw,
     })
   end
 end
@@ -100,6 +100,10 @@ function M.colors()
   local fg_light = Util.is_dark(normal.foreground) and normal.background or normal.foreground
   fg_dark = fg_dark or "#000000"
   fg_light = fg_light or "#ffffff"
+
+  local sign_hl = Util.get_hl("SignColumn")
+  local sign_bg = (sign_hl and sign_hl.background) and sign_hl.background or "NONE"
+
   for kw, opts in pairs(M.options.keywords) do
     local kw_color = opts.color or "default"
     local hex
@@ -129,6 +133,7 @@ function M.colors()
 
     vim.cmd("hi def TodoBg" .. kw .. " guibg=" .. hex .. " guifg=" .. fg .. " gui=bold")
     vim.cmd("hi def TodoFg" .. kw .. " guibg=NONE guifg=" .. hex .. " gui=NONE")
+    vim.cmd("hi def TodoSign" .. kw .. " guibg=" .. sign_bg .. " guifg=" .. hex .. " gui=NONE")
   end
 end
 
