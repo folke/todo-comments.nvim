@@ -40,11 +40,11 @@ function M.highlight(buf, first, last)
   local lines = vim.api.nvim_buf_get_lines(buf, first, last + 1, false)
 
   local pattern
-  if Config.options.highlight.comments_only then
-    local comment_str = vim.bo.commentstring:gsub('%s+', '')
-    comment_str = vim.fn.escape(comment_str, '*+?')
-    pattern = comment_str:gsub('%%s', [[\s*]]..Config.hl_regex..'.*')
-    pattern = vim.fn.escape(pattern, '%')
+  if Config.options.highlight.comments_only and not M.is_quickfix(buf) then
+    local comment_str = vim.bo.commentstring:gsub("%s+", "")
+    comment_str = vim.fn.escape(comment_str, "*+?")
+    pattern = comment_str:gsub("%%s", [[\s*]] .. Config.hl_regex .. ".*")
+    pattern = vim.fn.escape(pattern, "%")
   end
 
   for l, line in ipairs(lines) do
@@ -134,6 +134,10 @@ function M.is_valid_win(win)
   end
   local buf = vim.api.nvim_win_get_buf(win)
   return M.is_valid_buf(buf)
+end
+
+function M.is_quickfix(buf)
+  return vim.api.nvim_buf_get_option(buf, "buftype") == "quickfix"
 end
 
 function M.is_valid_buf(buf)
