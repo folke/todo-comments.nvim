@@ -24,6 +24,9 @@ end
 -- highlights the range for the given buf
 -- FIX: rerendering of line is glitchy
 function M.highlight(buf, first, last)
+  if not vim.api.nvim_buf_is_valid(buf) then
+    return
+  end
   vim.api.nvim_buf_clear_namespace(buf, Config.ns, first, last + 1)
 
   -- clear signs
