@@ -89,7 +89,7 @@ Todo comes with the following defaults:
     before = "", -- "fg" or "bg" or empty
     keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
     after = "fg", -- "fg" or "bg" or empty
-    pattern = '<(KEYWORDS)>:', -- vim regex
+    pattern = [[<(KEYWORDS)>:]], -- pattern used for highlightng (vim regex)
     comments_only = true, -- this applies the pattern only inside comments using `commentstring` option
   },
   -- list of named colors where we try to extract the guifg from the
@@ -102,7 +102,7 @@ Todo comes with the following defaults:
     default = { "Identifier", "#7C3AED" },
   },
   search = {
-    tool = 'rg',
+    command = "rg",
     args = {
       "--color=never",
       "--no-heading",
@@ -112,9 +112,8 @@ Todo comes with the following defaults:
     },
     -- regex that will be used to match keywords.
     -- don't replace the (KEYWORDS) placeholder
-    pattern = '\\b(KEYWORDS):', -- ripgrep regex
-    -- pattern = "(KEYWORDS)", -- match without the extra colon. You'll likely get false positives
-    -- pattern = "-- (KEYWORDS):", -- only match in lua comments
+    pattern = [[\b(KEYWORDS):]], -- ripgrep regex
+    -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
   },
 }
 ```
