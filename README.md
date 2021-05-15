@@ -17,9 +17,9 @@
 ## ⚡️ Requirements
 
 * Neovim >= 0.5.0
-* [ripgrep](https://github.com/BurntSushi/ripgrep) is used for searching.
 * a [patched font](https://www.nerdfonts.com/) for the icons, or change them to simple ASCII characters
 * optional:
+  - [ripgrep](https://github.com/BurntSushi/ripgrep) and [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) are used for searching.
   - [Trouble](https://github.com/folke/trouble.nvim)
   - [Telescope](https://github.com/nvim-telescope/telescope.nvim)
 
@@ -33,6 +33,7 @@ Install the plugin with your preferred package manager:
 -- Lua
 use {
   "folke/todo-comments.nvim",
+  requires = "nvim-lua/plenary.nvim",
   config = function()
     require("todo-comments").setup {
       -- your configuration comes here
@@ -47,6 +48,7 @@ use {
 
 ```vim
 " Vim Script
+Plug 'nvim-lua/plenary.nvim'
 Plug 'folke/todo-comments.nvim'
 
 lua << EOF

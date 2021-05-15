@@ -1,4 +1,3 @@
-local uv = vim.loop
 local Config = require("todo-comments.config")
 local Highlight = require("todo-comments.highlight")
 local Util = require("todo-comments.util")
@@ -42,65 +41,36 @@ function M.search(cb)
     return
   end
 
-  local stdin = nil
-  local stdout = uv.new_pipe(false)
-  local stderr = uv.new_pipe(false)
-  local error = ""
-  local lines = {}
+  local ok, Job = pcall(require, "plenary.job")
+  if not ok then
+    Util.error("search requires https://github.com/nvim-lua/plenary.nvim")
+    return
+  end
 
-  local opts = {
-    args = {
-      "--color=never",
-      "--no-heading",
-      "--with-filename",
-      "--line-number",
-      "--column",
-      Config.rg_regex,
-    },
-    stdio = { stdin, stdout, stderr },
-  }
-
-  uv.spawn("rg", opts, function(code, _signal)
-    if not stdout:is_closing() then
-      stdout:close()
-    end
-    if not stderr:is_closing() then
-      stderr:close()
-    end
-    if code == 2 then
-      vim.defer_fn(function()
-        Util.error(error)
-        Util.error("ripgrep failed with code " .. code)
-      end, 10)
-    end
-    if code == 1 then
-      vim.defer_fn(function()
-        Util.warn("no todos found")
-      end, 10)
-    end
-
-    vim.schedule_wrap(function()
-      cb(M.process(lines))
-    end)()
-  end)
-
-  stderr:read_start(function(_err, data, _is_complete)
-    if data then
-      error = error .. data
-    end
-  end)
-
-  stdout:read_start(function(err, data, is_complete)
-    if err or not data or is_complete then
-      return
-    end
-    data = data:gsub("\r", "")
-    for _, line in pairs(vim.split(data, "\n", true)) do
-      if line ~= "" then
-        table.insert(lines, line)
-      end
-    end
-  end)
+  Job
+    :new({
+      command = "rg",
+      args = {
+        "--color=never",
+        "--no-heading",
+        "--with-filename",
+        "--line-number",
+        "--column",
+        Config.rg_regex,
+      },
+      on_exit = vim.schedule_wrap(function(j, code)
+        if code == 2 then
+          local error = table.concat(j:stderr_result(), "\n")
+          Util.error("ripgrep failed with code " .. code .. "\n" .. error)
+        end
+        if code == 1 then
+          Util.warn("no todos found")
+        end
+        local lines = j:result()
+        cb(M.process(lines))
+      end),
+    })
+    :start()
 end
 
 function M.setqflist(opts)
