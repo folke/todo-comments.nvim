@@ -36,10 +36,10 @@ function M.search(cb)
     return
   end
 
-  local cmd = Config.options.search.tool
+  local command = Config.options.search.command
 
-  if vim.fn.executable(cmd) ~= 1 then
-    Util.error(cmd .. " was not found on your path")
+  if vim.fn.executable(command) ~= 1 then
+    Util.error(command .. " was not found on your path")
     return
   end
 
@@ -49,16 +49,16 @@ function M.search(cb)
     return
   end
 
-  local args = vim.deepcopy(Config.options.search.tool)
+  local args = vim.deepcopy(Config.options.search.args)
   table.insert(args, Config.search_regex)
   Job
     :new({
-      command = cmd,
+      command = command,
       args = args,
       on_exit = vim.schedule_wrap(function(j, code)
         if code == 2 then
           local error = table.concat(j:stderr_result(), "\n")
-          Util.error("ripgrep failed with code " .. code .. "\n" .. error)
+          Util.error(command .. " failed with code " .. code .. "\n" .. error)
         end
         if code == 1 then
           Util.warn("no todos found")
