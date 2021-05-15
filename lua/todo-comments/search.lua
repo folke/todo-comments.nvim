@@ -36,8 +36,10 @@ function M.search(cb)
     return
   end
 
-  if vim.fn.executable("rg") ~= 1 then
-    Util.error("rg (ripgrep) was not found on your path")
+  local cmd = Config.options.search.tool
+
+  if vim.fn.executable(cmd) ~= 1 then
+    Util.error(cmd .. " was not found on your path")
     return
   end
 
@@ -47,17 +49,12 @@ function M.search(cb)
     return
   end
 
+  local args = vim.deepcopy(Config.options.search.tool)
+  table.insert(args, Config.search_regex)
   Job
     :new({
-      command = "rg",
-      args = {
-        "--color=never",
-        "--no-heading",
-        "--with-filename",
-        "--line-number",
-        "--column",
-        Config.rg_regex,
-      },
+      command = cmd,
+      args = args,
       on_exit = vim.schedule_wrap(function(j, code)
         if code == 2 then
           local error = table.concat(j:stderr_result(), "\n")

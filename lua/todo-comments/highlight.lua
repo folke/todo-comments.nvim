@@ -12,9 +12,10 @@ M.wins = {}
 -- WARNING: ???
 -- FIX ddddd
 
-function M.match(str)
-  local m = vim.fn.matchlist(str, "\\v\\C" .. Config.rg_regex)
-  if m and m[2] then
+function M.match(str, pattern)
+  pattern = pattern or Config.hl_regex
+  local m = vim.fn.matchlist(str, [[\v\C]] .. pattern)
+  if #m > 1 and m[2] then
     local kw = m[2]
     local start = str:find(kw)
     return start, start + #kw, kw
@@ -38,8 +39,16 @@ function M.highlight(buf, first, last)
 
   local lines = vim.api.nvim_buf_get_lines(buf, first, last + 1, false)
 
+  local pattern
+  if Config.options.highlight.comments_only then
+    local comment_str = vim.bo.commentstring:gsub('%s+', '')
+    comment_str = vim.fn.escape(comment_str, '*+?')
+    pattern = comment_str:gsub('%%s', [[\s*]]..Config.hl_regex..'.*')
+    pattern = vim.fn.escape(pattern, '%')
+  end
+
   for l, line in ipairs(lines) do
-    local start, finish, kw = M.match(line)
+    local start, finish, kw = M.match(line, pattern)
     local lnum = first + l - 1
 
     if kw then

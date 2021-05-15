@@ -11,7 +11,9 @@ local make_entry = require("telescope.make_entry")
 
 local function todo(opts)
   opts = opts or {}
-  opts.search = Config.rg_regex
+  opts.vimgrep_arguments = {Config.options.search.tool}
+  vim.list_extend(opts.vimgrep_arguments, Config.options.search.args)
+  opts.search = Config.search_regex
   opts.prompt_title = "Find Todo"
   opts.use_regex = true
   local entry_maker = make_entry.gen_from_vimgrep(opts)
