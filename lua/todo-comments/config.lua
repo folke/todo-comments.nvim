@@ -36,7 +36,7 @@ local defaults = {
     before = "", -- "fg" or "bg" or empty
     keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
     after = "fg", -- "fg" or "bg" or empty
-    pattern = [[<(KEYWORDS)>:]], -- pattern used for highlightng (vim regex)
+    pattern = [[.*<(KEYWORDS)\s*:]], -- pattern used for highlightng (vim regex)
     comments_only = true, -- this applies the pattern only inside comments using `commentstring` option
   },
   -- list of named colors where we try to extract the guifg from the
@@ -89,6 +89,9 @@ function M._setup()
     for _, alt in pairs(opts.alt or {}) do
       M.keywords[alt] = kw
     end
+  end
+  if M.options.pattern then
+    Util.warn("'pattern' is deprectaed. Please refer to the documentation and use 'highlight.pattern' and 'search.pattern' instead.")
   end
   local tags = table.concat(vim.tbl_keys(M.keywords), "|")
   M.search_regex = M.options.search.pattern:gsub("KEYWORDS", tags)
