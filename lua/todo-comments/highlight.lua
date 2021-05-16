@@ -42,13 +42,17 @@ function M.highlight(buf, first, last)
   local pattern
   if Config.options.highlight.comments_only and not M.is_quickfix(buf) then
     local comment_str = vim.bo.commentstring:gsub("%s+", "")
-    comment_str = vim.fn.escape(comment_str, "*+?")
+    comment_str = vim.fn.escape(comment_str, "*+?{}()[]<>.-$^")
     pattern = comment_str:gsub("%%s", [[\s*]] .. Config.hl_regex .. ".*")
     pattern = vim.fn.escape(pattern, "%")
   end
 
   for l, line in ipairs(lines) do
-    local start, finish, kw = M.match(line, pattern)
+    local ok, start, finish, kw = pcall(M.match, line, pattern)
+    -- HACK: redo without the comment pattern for now if we get an error
+    if not ok then
+      start, finish, kw = M.match(line)
+    end
     local lnum = first + l - 1
 
     if kw then
