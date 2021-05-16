@@ -49,8 +49,7 @@ function M.search(cb)
     return
   end
 
-  local args = vim.deepcopy(Config.options.search.args)
-  table.insert(args, Config.search_regex)
+  local args = vim.tbl_flatten({ Config.options.search.args, Config.search_regex, "." })
   Job
     :new({
       command = command,
