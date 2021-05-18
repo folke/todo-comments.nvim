@@ -51,7 +51,7 @@ function M.highlight(buf, first, last)
     local ok, start, finish, kw = pcall(M.match, line, pattern)
     -- HACK: redo without the comment pattern for now if we get an error
     if not ok then
-      start, finish, kw = M.match(line)
+      ok, start, finish, kw = pcall(M.match, line)
     end
     local lnum = first + l - 1
 
