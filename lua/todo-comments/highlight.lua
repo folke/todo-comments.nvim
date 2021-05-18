@@ -10,7 +10,7 @@ M.wins = {}
 -- NOTE: adding a note
 -- FIX: this needs fixing
 -- WARNING: ???
--- FIX ddddd
+-- FIX: ddddd
 
 function M.match(str, pattern)
   pattern = pattern or Config.hl_regex
@@ -20,6 +20,29 @@ function M.match(str, pattern)
     local start = str:find(kw)
     return start, start + #kw, kw
   end
+end
+
+-- This method returns nil if this buf doesn't have a treesitter parser
+-- @return true or false otherwise
+function M.is_comment(buf, line, col)
+  local ok, parsers = pcall(require, "nvim-treesitter.parsers")
+  if not ok then
+    return
+  end
+  local lang = parsers.get_buf_lang(buf)
+  if not parsers.has_parser(lang) then
+    return
+  end
+  local parser = vim.treesitter.get_parser(buf)
+  local trees = parser:parse()
+  for _, tree in pairs(trees or {}) do
+    local root = tree:root()
+    local node = root:named_descendant_for_range(line, col, line, col)
+    if node:type() == "comment" then
+      return true
+    end
+  end
+  return false
 end
 
 -- highlights the range for the given buf
@@ -39,21 +62,19 @@ function M.highlight(buf, first, last)
 
   local lines = vim.api.nvim_buf_get_lines(buf, first, last + 1, false)
 
-  local pattern
-  if Config.options.highlight.comments_only and not M.is_quickfix(buf) then
-    local comment_str = vim.bo.commentstring:gsub("%s+", "")
-    comment_str = vim.fn.escape(comment_str, "*+?{}()[]<>.-$^")
-    pattern = comment_str:gsub("%%s", [[\s*]] .. Config.hl_regex .. ".*")
-    pattern = vim.fn.escape(pattern, "%")
-  end
-
   for l, line in ipairs(lines) do
-    local ok, start, finish, kw = pcall(M.match, line, pattern)
-    -- HACK: redo without the comment pattern for now if we get an error
-    if not ok then
-      ok, start, finish, kw = pcall(M.match, line)
-    end
+    local _ok, start, finish, kw = pcall(M.match, line)
     local lnum = first + l - 1
+
+    if start then
+      if
+        Config.options.highlight.comments_only
+        and not M.is_quickfix(buf)
+        and M.is_comment(buf, lnum, start) == false
+      then
+        kw = nil
+      end
+    end
 
     if kw then
       kw = Config.keywords[kw] or kw

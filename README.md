@@ -9,6 +9,7 @@
 ## ✨ Features
 
 * **highlight** your todo comments in different styles
+* optionally only highlights todos in comments using **TreeSitter**
 * configurable **signs**
 * open todos in a **quickfix** list
 * open todos in [Trouble](https://github.com/folke/trouble.nvim)
@@ -90,7 +91,7 @@ Todo comes with the following defaults:
     keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
     after = "fg", -- "fg" or "bg" or empty
     pattern = [[.*<(KEYWORDS)\s*:]], -- pattern used for highlightng (vim regex)
-    comments_only = true, -- this applies the pattern only inside comments using `commentstring` option
+    comments_only = true, -- uses treesitter to match keywords in comments only
   },
   -- list of named colors where we try to extract the guifg from the
   -- list of hilight groups or use the hex color if hl not found as a fallback
