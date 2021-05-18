@@ -33,16 +33,27 @@ function M.is_comment(buf, line, col)
   if not parsers.has_parser(lang) then
     return
   end
+  col = col - 1
+
+  local is_comment = false
   local parser = vim.treesitter.get_parser(buf)
-  local trees = parser:parse()
-  for _, tree in pairs(trees or {}) do
-    local root = tree:root()
-    local node = root:named_descendant_for_range(line, col, line, col)
-    if node:type() == "comment" then
-      return true
+  parser:for_each_tree(function(tree)
+    if is_comment then
+      return
     end
-  end
-  return false
+    local root = tree:root()
+    if root then
+      local node = root:named_descendant_for_range(line, col, line, col)
+      while node ~= nil do
+        if node:type() == "comment" then
+          is_comment = true
+          return
+        end
+        node = node:parent()
+      end
+    end
+  end)
+  return is_comment
 end
 
 -- highlights the range for the given buf
