@@ -77,7 +77,7 @@ function M.setup(options)
 end
 
 function M._setup()
-  M.options = vim.tbl_deep_extend("force", {}, defaults, M._options or {})
+  M.options = vim.tbl_deep_extend("force", {}, defaults, M.options or {}, M._options or {})
 
   -- -- keywords should always be fully overriden
   -- if M._options and M._options.keywords then
