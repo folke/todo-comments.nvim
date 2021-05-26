@@ -30,7 +30,10 @@ function M.process(lines)
   return results
 end
 
-function M.search(cb)
+function M.search(cb, opts)
+  opts = opts or {}
+  opts.cwd = opts.cwd or "."
+  opts.cwd = vim.fn.fnamemodify(opts.cwd, ":p")
   if not Config.loaded then
     Util.error("todo-comments isn't loaded. Did you run setup()?")
     return
@@ -49,7 +52,7 @@ function M.search(cb)
     return
   end
 
-  local args = vim.tbl_flatten({ Config.options.search.args, Config.search_regex, "." })
+  local args = vim.tbl_flatten({ Config.options.search.args, Config.search_regex, opts.cwd })
   Job
     :new({
       command = command,
@@ -70,7 +73,14 @@ function M.search(cb)
 end
 
 function M.setqflist(opts)
-  opts = opts or { open = true }
+  if type(opts) == "string" then
+    opts = { cwd = opts }
+    if opts.cwd:sub(1, 4) == "cwd=" then
+      opts.cwd = opts.cwd:sub(5)
+    end
+  end
+  opts = opts or {}
+  opts.open = (opts.open ~= nil) and opts.open or true
   M.search(function(results)
     vim.fn.setqflist({}, " ", { title = "Todo", id = "$", items = results })
     if opts.open then
@@ -80,7 +90,7 @@ function M.setqflist(opts)
     if win.winid ~= 0 then
       Highlight.highlight_win(win.winid, true)
     end
-  end)
+  end, opts)
 end
 
 return M

@@ -1,4 +1,4 @@
 
-command! TodoQuickFix lua require("todo-comments.search").setqflist()
-command! TodoTelescope Telescope todo-comments todo
-command! TodoTrouble Trouble todo
+command! -nargs=* TodoQuickFix lua require("todo-comments.search").setqflist(<f-args>)
+command! -nargs=* TodoTelescope Telescope todo-comments todo <args>
+command! -nargs=* TodoTrouble Trouble todo <args>

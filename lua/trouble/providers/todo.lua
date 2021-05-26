@@ -2,7 +2,7 @@ local Search = require("todo-comments.search")
 local util = require("trouble.util")
 local Config = require("todo-comments.config")
 
-local function todo(_win, _buf, cb, _options)
+local function todo(_win, _buf, cb, opts)
   Search.search(function(results)
     local ret = {}
     for _, item in pairs(results) do
@@ -30,7 +30,7 @@ local function todo(_win, _buf, cb, _options)
       util.warn("no todos found")
     end
     cb(ret)
-  end)
+  end, opts.cmd_options)
 end
 
 return todo

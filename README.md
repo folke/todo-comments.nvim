@@ -129,6 +129,12 @@ Todo comes with the following defaults:
 
 Todos are highlighted in all regular files.
 
+Each of the commands below can have an options argument to specify the directory to search for comments, like:
+
+```vim
+:TodoTrouble cwd=~/projects/foobar
+```
+
 ### 🔎 `:TodoQuickFix`
 
 This uses the quickfix list to show all todos in your project.
