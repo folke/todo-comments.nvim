@@ -91,10 +91,6 @@ function M._setup()
     end
   end
 
-  if M.options.pattern then
-    Util.warn("'pattern' is deprectaed. Please refer to the documentation and use 'highlight.pattern' and 'search.pattern' instead.")
-  end
-
   local tags = table.concat(vim.tbl_keys(M.keywords), "|")
   M.search_regex = M.options.search.pattern:gsub("KEYWORDS", tags)
   M.hl_regex = M.options.highlight.pattern:gsub("KEYWORDS", tags)

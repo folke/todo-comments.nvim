@@ -9,4 +9,12 @@ function M.reset()
   require("todo-comments").setup()
 end
 
+function M.disable()
+  require("todo-comments.highlight").stop()
+end
+
+function M.enable()
+  require("todo-comments.highlight").start()
+end
+
 return M

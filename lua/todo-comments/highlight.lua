@@ -1,6 +1,7 @@
 local Config = require("todo-comments.config")
 
 local M = {}
+M.enabled = false
 M.bufs = {}
 M.wins = {}
 
@@ -197,6 +198,9 @@ function M.attach(win)
   if not M.bufs[buf] then
     vim.api.nvim_buf_attach(buf, false, {
       on_lines = function(_event, _buf, _tick, first, _last, last_new)
+        if not M.enabled then
+          return true
+        end
         -- detach from this buffer in case we no longer want it
         if not M.is_valid_buf(buf) then
           return true
@@ -220,7 +224,23 @@ function M.attach(win)
   end
 end
 
+function M.stop()
+  M.enabled = false
+  pcall(vim.cmd, "autocmd! Todo")
+  pcall(vim.cmd, "augroup! Todo")
+  M.wins = {}
+  vim.fn.sign_unplace("todo-signs")
+  for _, buf in pairs(M.bufs) do
+    vim.api.nvim_buf_clear_namespace(buf, Config.ns, 0, -1)
+  end
+  M.bufs = {}
+end
+
 function M.start()
+  if M.enabled then
+    M.stop()
+  end
+  M.enabled = true
   -- setup autocmds
   -- TODO: make some of the below configurable
   vim.api.nvim_exec(
