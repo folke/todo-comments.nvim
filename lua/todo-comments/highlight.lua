@@ -15,6 +15,12 @@ M.wins = {}
 
 function M.match(str, pattern)
   pattern = pattern or Config.hl_regex
+  max_line_len = Config.options.highlight.max_line_len
+
+  if max_line_len and string.len(str) > max_line_len then
+    return
+  end
+
   local m = vim.fn.matchlist(str, [[\v\C]] .. pattern)
   if #m > 1 and m[2] then
     local kw = m[2]
