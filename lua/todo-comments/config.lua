@@ -28,6 +28,7 @@ local defaults = {
     PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
     NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
   },
+  merge_keywords = true, -- when true, custom keywords will be merged with the defaults
   -- highlighting of the line containing the todo comment
   -- * before: highlights before the keyword (typically comment characters)
   -- * keyword: highlights of the keyword
@@ -81,9 +82,9 @@ function M._setup()
   M.options = vim.tbl_deep_extend("force", {}, defaults, M.options or {}, M._options or {})
 
   -- -- keywords should always be fully overriden
-  -- if M._options and M._options.keywords then
-  --   M.options.keywords = M._options.keywords
-  -- end
+  if M._options and M._options.keywords and M._options.merge_keywords == false then
+    M.options.keywords = M._options.keywords
+  end
 
   for kw, opts in pairs(M.options.keywords) do
     M.keywords[kw] = kw
