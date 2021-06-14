@@ -15,9 +15,9 @@ M.wins = {}
 
 function M.match(str, pattern)
   pattern = pattern or Config.hl_regex
-  max_line_len = Config.options.highlight.max_line_len
+  local max_line_len = Config.options.highlight.max_line_len
 
-  if max_line_len and string.len(str) > max_line_len then
+  if max_line_len and #str > max_line_len then
     return
   end
 

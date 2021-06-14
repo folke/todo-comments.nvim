@@ -38,7 +38,7 @@ local defaults = {
     after = "fg", -- "fg" or "bg" or empty
     pattern = [[.*<(KEYWORDS)\s*:]], -- pattern used for highlightng (vim regex)
     comments_only = true, -- this applies the pattern only inside comments using `commentstring` option
-    max_line_len = nil, -- ignore lines longer than this
+    max_line_len = 400, -- ignore lines longer than this
   },
   -- list of named colors where we try to extract the guifg from the
   -- list of hilight groups or use the hex color if hl not found as a fallback
