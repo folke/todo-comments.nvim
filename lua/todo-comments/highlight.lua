@@ -81,10 +81,10 @@ function M.highlight(buf, first, last)
   local lines = vim.api.nvim_buf_get_lines(buf, first, last + 1, false)
 
   for l, line in ipairs(lines) do
-    local _ok, start, finish, kw = pcall(M.match, line)
+    local ok, start, finish, kw = pcall(M.match, line)
     local lnum = first + l - 1
 
-    if start then
+    if ok and start then
       if
         Config.options.highlight.comments_only
         and not M.is_quickfix(buf)
