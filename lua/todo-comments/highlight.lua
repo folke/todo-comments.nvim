@@ -138,7 +138,13 @@ function M.highlight(buf, first, last)
         show_sign = opts.signs
       end
       if show_sign then
-        vim.fn.sign_place(0, "todo-signs", "todo-sign-" .. kw, buf, { lnum = lnum + 1, priority = 8 })
+        vim.fn.sign_place(
+          0,
+          "todo-signs",
+          "todo-sign-" .. kw,
+          buf,
+          { lnum = lnum + 1, priority = Config.options.sign_priority }
+        )
       end
     end
   end

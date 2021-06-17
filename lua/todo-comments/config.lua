@@ -14,6 +14,7 @@ M.ns = vim.api.nvim_create_namespace("todo-comments")
 -- TODO: add support for markdown todos
 local defaults = {
   signs = true, -- show icons in the signs column
+  sign_priority = 8, -- sign priority
   -- keywords recognized as todo comments
   keywords = {
     FIX = {
