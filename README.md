@@ -5,21 +5,20 @@
 
 ![image](https://user-images.githubusercontent.com/292349/118135272-ad21e980-b3b7-11eb-881c-e45a4a3d6192.png)
 
-
 ## ✨ Features
 
-* **highlight** your todo comments in different styles
-* optionally only highlights todos in comments using **TreeSitter**
-* configurable **signs**
-* open todos in a **quickfix** list
-* open todos in [Trouble](https://github.com/folke/trouble.nvim)
-* search todos with [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+- **highlight** your todo comments in different styles
+- optionally only highlights todos in comments using **TreeSitter**
+- configurable **signs**
+- open todos in a **quickfix** list
+- open todos in [Trouble](https://github.com/folke/trouble.nvim)
+- search todos with [Telescope](https://github.com/nvim-telescope/telescope.nvim)
 
 ## ⚡️ Requirements
 
-* Neovim >= 0.5.0
-* a [patched font](https://www.nerdfonts.com/) for the icons, or change them to simple ASCII characters
-* optional:
+- Neovim >= 0.5.0
+- a [patched font](https://www.nerdfonts.com/) for the icons, or change them to simple ASCII characters
+- optional:
   - [ripgrep](https://github.com/BurntSushi/ripgrep) and [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) are used for searching.
   - [Trouble](https://github.com/folke/trouble.nvim)
   - [Telescope](https://github.com/nvim-telescope/telescope.nvim)
@@ -61,7 +60,7 @@ lua << EOF
 EOF
 ```
 
-## ⚙️  Configuration
+## ⚙️ Configuration
 
 Todo comes with the following defaults:
 
@@ -95,6 +94,7 @@ Todo comes with the following defaults:
     pattern = [[.*<(KEYWORDS)\s*:]], -- pattern used for highlightng (vim regex)
     comments_only = true, -- uses treesitter to match keywords in comments only
     max_line_len = 400, -- ignore lines longer than this
+    exclude = {}, -- list of file types to exclude highlighting
   },
   -- list of named colors where we try to extract the guifg from the
   -- list of hilight groups or use the hex color if hl not found as a fallback
@@ -126,9 +126,9 @@ Todo comes with the following defaults:
 
 **Todo** matches on any text that starts with one of your defined keywords (or alt) followed by a colon:
 
-* TODO: do something
-* FIX: this should be fixed
-* HACK: weird code warning
+- TODO: do something
+- FIX: this should be fixed
+- HACK: weird code warning
 
 Todos are highlighted in all regular files.
 
@@ -144,7 +144,6 @@ This uses the quickfix list to show all todos in your project.
 
 ![image](https://user-images.githubusercontent.com/292349/118135332-bf9c2300-b3b7-11eb-9a40-1307feb27c44.png)
 
-
 ### 🚦 `:TodoTrouble`
 
 List all project todos in [trouble](https://github.com/folke/trouble.nvim)
@@ -156,7 +155,6 @@ List all project todos in [trouble](https://github.com/folke/trouble.nvim)
 Search through all project todos with Telescope
 
 ![image](https://user-images.githubusercontent.com/292349/118135371-ccb91200-b3b7-11eb-9002-66af3b683cf0.png)
-
 
 <!-- markdownlint-disable-file MD033 -->
 <!-- markdownlint-configure-file { "MD013": { "line_length": 120 } } -->

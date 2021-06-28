@@ -41,6 +41,7 @@ local defaults = {
     pattern = [[.*<(KEYWORDS)\s*:]], -- pattern used for highlightng (vim regex)
     comments_only = true, -- this applies the pattern only inside comments using `commentstring` option
     max_line_len = 400, -- ignore lines longer than this
+    exclude = {}, -- list of file types to exclude highlighting
   },
   -- list of named colors where we try to extract the guifg from the
   -- list of hilight groups or use the hex color if hl not found as a fallback
