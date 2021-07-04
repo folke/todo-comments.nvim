@@ -31,32 +31,30 @@ end
 
 -- This method returns nil if this buf doesn't have a treesitter parser
 -- @return true or false otherwise
-function M.is_comment(buf, line, col)
-  local ok, parsers = pcall(require, "nvim-treesitter.parsers")
-  if not ok then
+function M.is_comment(buf, line)
+  local highlighter = require("vim.treesitter.highlighter")
+  local hl = highlighter.active[buf]
+
+  if not hl then
     return
   end
-  local lang = parsers.get_buf_lang(buf)
-  if not parsers.has_parser(lang) then
-    return
-  end
-  col = col - 1
 
   local is_comment = false
-  local parser = vim.treesitter.get_parser(buf)
-  parser:for_each_tree(function(tree)
+  hl.tree:for_each_tree(function(tree, lang_tree)
     if is_comment then
       return
     end
-    local root = tree:root()
-    if root then
-      local node = root:named_descendant_for_range(line, col, line, col)
-      while node ~= nil do
-        if node:type() == "comment" then
-          is_comment = true
-          return
-        end
-        node = node:parent()
+
+    local query = hl:get_query(lang_tree:lang())
+    if not (query and query:query()) then
+      return
+    end
+
+    local iter = query:query():iter_captures(tree:root(), buf, line, line + 1)
+
+    for capture, _ in iter do
+      if query._query.captures[capture] == "comment" then
+        is_comment = true
       end
     end
   end)
@@ -85,11 +83,7 @@ function M.highlight(buf, first, last)
     local lnum = first + l - 1
 
     if ok and start then
-      if
-        Config.options.highlight.comments_only
-        and not M.is_quickfix(buf)
-        and M.is_comment(buf, lnum, start) == false
-      then
+      if Config.options.highlight.comments_only and not M.is_quickfix(buf) and M.is_comment(buf, lnum) == false then
         kw = nil
       end
     end
