@@ -61,6 +61,16 @@ function M.is_comment(buf, line)
   return is_comment
 end
 
+local function add_highlight(buffer, ns, hl, line, from, to)
+  vim.api.nvim_buf_set_extmark(buffer, ns, line, from, {
+    end_line = line,
+    end_col = to,
+    hl_group = hl,
+    priority = 500,
+  })
+  -- vim.api.nvim_buf_add_highlight(buffer, ns, hl, line, from, to)
+end
+
 -- highlights the range for the given buf
 -- FIX: rerendering of line is glitchy
 function M.highlight(buf, first, last)
@@ -105,25 +115,25 @@ function M.highlight(buf, first, last)
 
       -- before highlights
       if hl.before == "fg" then
-        vim.api.nvim_buf_add_highlight(buf, Config.ns, hl_fg, lnum, 0, start)
+        add_highlight(buf, Config.ns, hl_fg, lnum, 0, start)
       elseif hl.before == "bg" then
-        vim.api.nvim_buf_add_highlight(buf, Config.ns, hl_bg, lnum, 0, start)
+        add_highlight(buf, Config.ns, hl_bg, lnum, 0, start)
       end
 
       -- tag highlights
       if hl.keyword == "wide" then
-        vim.api.nvim_buf_add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
+        add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
       elseif hl.keyword == "bg" then
-        vim.api.nvim_buf_add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
+        add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
       elseif hl.keyword == "fg" then
-        vim.api.nvim_buf_add_highlight(buf, Config.ns, hl_fg, lnum, start, finish)
+        add_highlight(buf, Config.ns, hl_fg, lnum, start, finish)
       end
 
       -- after highlights
       if hl.after == "fg" then
-        vim.api.nvim_buf_add_highlight(buf, Config.ns, hl_fg, lnum, finish, #line)
+        add_highlight(buf, Config.ns, hl_fg, lnum, finish, #line)
       elseif hl.after == "bg" then
-        vim.api.nvim_buf_add_highlight(buf, Config.ns, hl_bg, lnum, finish, #line)
+        add_highlight(buf, Config.ns, hl_bg, lnum, finish, #line)
       end
 
       -- signs
@@ -216,10 +226,10 @@ function M.attach(win)
           return true
         end
 
-        -- HACK: use defer, because after an undo, nvim_buf_get_lines returns lines before undo
+        -- HACK: use defer, because treesitter resets highlights
         vim.defer_fn(function()
           M.highlight(buf, first, last_new)
-        end, 0)
+        end, 5)
       end,
       on_detach = function()
         M.bufs[buf] = nil
