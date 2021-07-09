@@ -72,8 +72,9 @@ local function add_highlight(buffer, ns, hl, line, from, to)
 end
 
 -- highlights the range for the given buf
--- FIX: rerendering of line is glitchy
-function M.highlight(buf, first, last)
+function M.highlight(buf, first, last, _event)
+  -- print("highlight: [" .. first .. ", " .. last .. "] " .. tostring(event))
+  -- vim.api.nvim_err_writeln(vim.inspect({ first, last }))
   if not vim.api.nvim_buf_is_valid(buf) then
     return
   end
@@ -227,14 +228,28 @@ function M.attach(win)
         end
 
         -- HACK: use defer, because treesitter resets highlights
-        vim.defer_fn(function()
-          M.highlight(buf, first, last_new)
-        end, 5)
+        M.highlight(buf, first, last_new, "buf:on_lines")
       end,
       on_detach = function()
         M.bufs[buf] = nil
       end,
     })
+
+    local highlighter = require("vim.treesitter.highlighter")
+    local hl = highlighter.active[buf]
+    if hl then
+      -- also listen to TS changes so we can properly update the buffer based on is_comment
+      hl.tree:register_cbs({
+        on_changedtree = function(changes)
+          for _, ch in ipairs(changes or {}) do
+            vim.defer_fn(function()
+              M.highlight(buf, ch[1], ch[3] + 1, "on_changedtree")
+            end, 0)
+          end
+        end,
+      })
+    end
+
     M.bufs[buf] = true
     M.highlight_win(win)
     M.wins[win] = true
