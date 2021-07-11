@@ -62,13 +62,13 @@ function M.is_comment(buf, line)
 end
 
 local function add_highlight(buffer, ns, hl, line, from, to)
-  vim.api.nvim_buf_set_extmark(buffer, ns, line, from, {
-    end_line = line,
-    end_col = to,
-    hl_group = hl,
-    priority = 500,
-  })
-  -- vim.api.nvim_buf_add_highlight(buffer, ns, hl, line, from, to)
+  -- vim.api.nvim_buf_set_extmark(buffer, ns, line, from, {
+  --   end_line = line,
+  --   end_col = to,
+  --   hl_group = hl,
+  --   priority = 500,
+  -- })
+  vim.api.nvim_buf_add_highlight(buffer, ns, hl, line, from, to)
 end
 
 -- highlights the range for the given buf
