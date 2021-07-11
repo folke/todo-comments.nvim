@@ -23,7 +23,12 @@ function M.match(str, pattern)
 
   local m = vim.fn.matchlist(str, [[\v\C]] .. pattern)
   if #m > 1 and m[2] then
-    local kw = m[2]
+    local kw = ''
+    if m[2] == '' and m[3] then
+        kw = m[3]
+    else
+        kw = m[2]
+    end
     local start = str:find(kw)
     return start, start + #kw, kw
   end
