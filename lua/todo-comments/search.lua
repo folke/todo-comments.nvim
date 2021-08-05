@@ -73,6 +73,14 @@ function M.search(cb, opts)
 end
 
 function M.setqflist(opts)
+  M.setlist(opts)
+end
+
+function M.setloclist(opts)
+  M.setlist(opts, true)
+end
+
+function M.setlist(opts, use_loclist)
   if type(opts) == "string" then
     opts = { cwd = opts }
     if opts.cwd:sub(1, 4) == "cwd=" then
@@ -82,9 +90,17 @@ function M.setqflist(opts)
   opts = opts or {}
   opts.open = (opts.open ~= nil) and opts.open or true
   M.search(function(results)
-    vim.fn.setqflist({}, " ", { title = "Todo", id = "$", items = results })
+    if use_loclist then
+      vim.fn.setloclist(0, {}, " ", { title = "Todo", id = "$", items = results })
+    else
+      vim.fn.setqflist({}, " ", { title = "Todo", id = "$", items = results })
+    end
     if opts.open then
-      vim.cmd([[copen]])
+      if use_loclist then
+        vim.cmd([[lopen]])
+      else
+        vim.cmd([[copen]])
+      end
     end
     local win = vim.fn.getqflist({ winid = true })
     if win.winid ~= 0 then

@@ -144,6 +144,12 @@ This uses the quickfix list to show all todos in your project.
 
 ![image](https://user-images.githubusercontent.com/292349/118135332-bf9c2300-b3b7-11eb-9a40-1307feb27c44.png)
 
+### 🔎 `:TodoLocList`
+
+This uses the location list to show all todos in your project.
+
+![image](https://user-images.githubusercontent.com/292349/118135332-bf9c2300-b3b7-11eb-9a40-1307feb27c44.png)
+
 ### 🚦 `:TodoTrouble`
 
 List all project todos in [trouble](https://github.com/folke/trouble.nvim)
