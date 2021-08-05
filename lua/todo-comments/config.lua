@@ -38,7 +38,9 @@ local defaults = {
     before = "", -- "fg" or "bg" or empty
     keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
     after = "fg", -- "fg" or "bg" or empty
-    pattern = [[.*<(KEYWORDS)\s*:]], -- pattern used for highlightng (vim regex)
+    -- pattern can be a string, or a table of regexes that will be checked
+    pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlightng (vim regex)
+    -- pattern = { [[.*<(KEYWORDS)\s*:]], [[.*\@(KEYWORDS)\s*]] }, -- pattern used for highlightng (vim regex)
     comments_only = true, -- this applies the pattern only inside comments using `commentstring` option
     max_line_len = 400, -- ignore lines longer than this
     exclude = {}, -- list of file types to exclude highlighting
@@ -97,7 +99,13 @@ function M._setup()
 
   local tags = table.concat(vim.tbl_keys(M.keywords), "|")
   M.search_regex = M.options.search.pattern:gsub("KEYWORDS", tags)
-  M.hl_regex = M.options.highlight.pattern:gsub("KEYWORDS", tags)
+  M.hl_regex = {}
+  local patterns = M.options.highlight.pattern
+  patterns = type(patterns) == "table" and patterns or { patterns }
+  for _, p in pairs(patterns) do
+    p = p:gsub("KEYWORDS", tags)
+    table.insert(M.hl_regex, p)
+  end
   M.colors()
   M.signs()
   require("todo-comments.highlight").start()
