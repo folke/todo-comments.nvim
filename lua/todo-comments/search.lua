@@ -34,6 +34,7 @@ function M.search(cb, opts)
   opts = opts or {}
   opts.cwd = opts.cwd or "."
   opts.cwd = vim.fn.fnamemodify(opts.cwd, ":p")
+  opts.disable_not_found_warnings = opts.disable_not_found_warnings or false
   if not Config.loaded then
     Util.error("todo-comments isn't loaded. Did you run setup()?")
     return
@@ -62,7 +63,7 @@ function M.search(cb, opts)
           local error = table.concat(j:stderr_result(), "\n")
           Util.error(command .. " failed with code " .. code .. "\n" .. error)
         end
-        if code == 1 then
+        if code == 1 and opts.disable_not_found_warnings ~= true then
           Util.warn("no todos found")
         end
         local lines = j:result()
