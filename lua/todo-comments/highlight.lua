@@ -275,7 +275,9 @@ function M.stop()
   M.wins = {}
   vim.fn.sign_unplace("todo-signs")
   for buf, _ in pairs(M.bufs) do
-    vim.api.nvim_buf_clear_namespace(buf, Config.ns, 0, -1)
+    if vim.fn.bufexists(buf) then
+      vim.api.nvim_buf_clear_namespace(buf, Config.ns, 0, -1)
+    end
   end
   M.bufs = {}
 end
