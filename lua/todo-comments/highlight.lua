@@ -274,7 +274,7 @@ function M.stop()
   pcall(vim.cmd, "augroup! Todo")
   M.wins = {}
   vim.fn.sign_unplace("todo-signs")
-  for _, buf in pairs(M.bufs) do
+  for buf, _ in pairs(M.bufs) do
     vim.api.nvim_buf_clear_namespace(buf, Config.ns, 0, -1)
   end
   M.bufs = {}
