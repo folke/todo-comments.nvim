@@ -17,4 +17,8 @@ function M.enable()
   require("todo-comments.highlight").start()
 end
 
+function M.switch()
+  require("todo-comments.highlight").toggle()
+end
+
 return M

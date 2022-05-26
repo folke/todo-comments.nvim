@@ -304,4 +304,11 @@ function M.start()
   end
 end
 
+function M.toggle()
+  if M.enabled then
+    M.stop() return
+  end
+  M.start()
+end
+
 return M
