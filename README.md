@@ -132,10 +132,18 @@ Todo comes with the following defaults:
 
 Todos are highlighted in all regular files.
 
-Each of the commands below can have an options argument to specify the directory to search for comments, like:
+Each of the commands below accept the following arguments:
+
+- `cwd` - Specify the directory to search for comments, like:
 
 ```vim
 :TodoTrouble cwd=~/projects/foobar
+```
+
+- `keywords` - Comma separated list of keywords to filter results by. Keywords are case-sensitive.
+
+```vim
+:TodoTelescope keywords=TODO,FIX
 ```
 
 ### 🔎 `:TodoQuickFix`

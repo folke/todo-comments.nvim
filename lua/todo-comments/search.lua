@@ -4,6 +4,18 @@ local Util = require("todo-comments.util")
 
 local M = {}
 
+local function keywords_filter(opts_keywords)
+  assert(not opts_keywords or type(opts_keywords) == "string", "'keywords' must be a comma separated string or nil")
+  local all_keywords = vim.tbl_keys(Config.keywords)
+  if not opts_keywords then
+    return all_keywords
+  end
+  local filters = vim.split(opts_keywords, ",")
+  return vim.tbl_filter(function(kw)
+    return vim.tbl_contains(filters, kw)
+  end, all_keywords)
+end
+
 function M.process(lines)
   local results = {}
   for _, line in pairs(lines) do
@@ -53,7 +65,8 @@ function M.search(cb, opts)
     return
   end
 
-  local args = vim.tbl_flatten({ Config.options.search.args, Config.search_regex, opts.cwd })
+  local args =
+    vim.tbl_flatten({ Config.options.search.args, Config.search_regex(keywords_filter(opts.keywords)), opts.cwd })
   Job
     :new({
       command = command,
@@ -73,6 +86,16 @@ function M.search(cb, opts)
     :start()
 end
 
+local function parse_opts(opts)
+  if not opts or type(opts) ~= "string" then
+    return opts
+  end
+  return {
+    keywords = opts:match("keywords=(%S*)"),
+    cwd = opts:match("cwd=(%S*)"),
+  }
+end
+
 function M.setqflist(opts)
   M.setlist(opts)
 end
@@ -82,13 +105,7 @@ function M.setloclist(opts)
 end
 
 function M.setlist(opts, use_loclist)
-  if type(opts) == "string" then
-    opts = { cwd = opts }
-    if opts.cwd:sub(1, 4) == "cwd=" then
-      opts.cwd = opts.cwd:sub(5)
-    end
-  end
-  opts = opts or {}
+  opts = parse_opts(opts) or {}
   opts.open = (opts.open ~= nil) and opts.open or true
   M.search(function(results)
     if use_loclist then
