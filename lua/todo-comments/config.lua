@@ -29,6 +29,10 @@ local defaults = {
     PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
     NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
   },
+  gui_style = {
+    fg = false, -- If true, fg highlight will use gui=BOLD. If false, use gui=NONE.
+    bg = true,  -- If true, bg highlight will use gui=BOLD, If false, use gui=NONE.
+  },
   merge_keywords = true, -- when true, custom keywords will be merged with the defaults
   -- highlighting of the line containing the todo comment
   -- * before: highlights before the keyword (typically comment characters)
@@ -127,6 +131,8 @@ function M.colors()
   local fg_light = Util.is_dark(normal.foreground or "#ffffff") and normal.background or normal.foreground
   fg_dark = fg_dark or "#000000"
   fg_light = fg_light or "#ffffff"
+  local fg_gui = M.options.gui_style.fg and 'BOLD' or 'NONE'
+  local bg_gui = M.options.gui_style.bg and 'BOLD' or 'NONE'
 
   local sign_hl = Util.get_hl("SignColumn")
   local sign_bg = (sign_hl and sign_hl.background) and sign_hl.background or "NONE"
@@ -158,8 +164,8 @@ function M.colors()
     end
     local fg = Util.is_dark(hex) and fg_light or fg_dark
 
-    vim.cmd("hi def TodoBg" .. kw .. " guibg=" .. hex .. " guifg=" .. fg .. " gui=bold")
-    vim.cmd("hi def TodoFg" .. kw .. " guibg=NONE guifg=" .. hex .. " gui=NONE")
+    vim.cmd("hi def TodoBg" .. kw .. " guibg=" .. hex .. " guifg=" .. fg .. " gui=" .. bg_gui)
+    vim.cmd("hi def TodoFg" .. kw .. " guibg=NONE guifg=" .. hex .. " gui=" .. fg_gui)
     vim.cmd("hi def TodoSign" .. kw .. " guibg=" .. sign_bg .. " guifg=" .. hex .. " gui=NONE")
   end
 end
