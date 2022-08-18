@@ -30,8 +30,8 @@ local defaults = {
     NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
   },
   gui_style = {
-    fg = false, -- If true, fg highlight will use gui=BOLD. If false, use gui=NONE.
-    bg = true,  -- If true, bg highlight will use gui=BOLD, If false, use gui=NONE.
+    fg = "NONE", -- The gui style to use for the fg highlight group.
+    bg = "BOLD", -- The gui style to use for the bg highlight group.
   },
   merge_keywords = true, -- when true, custom keywords will be merged with the defaults
   -- highlighting of the line containing the todo comment
@@ -131,8 +131,8 @@ function M.colors()
   local fg_light = Util.is_dark(normal.foreground or "#ffffff") and normal.background or normal.foreground
   fg_dark = fg_dark or "#000000"
   fg_light = fg_light or "#ffffff"
-  local fg_gui = M.options.gui_style.fg and 'BOLD' or 'NONE'
-  local bg_gui = M.options.gui_style.bg and 'BOLD' or 'NONE'
+  local fg_gui = M.options.gui_style.fg
+  local bg_gui = M.options.gui_style.bg
 
   local sign_hl = Util.get_hl("SignColumn")
   local sign_bg = (sign_hl and sign_hl.background) and sign_hl.background or "NONE"
