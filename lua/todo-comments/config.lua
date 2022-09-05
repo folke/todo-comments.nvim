@@ -28,6 +28,7 @@ local defaults = {
     WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
     PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
     NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+    TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
   },
   gui_style = {
     fg = "NONE", -- The gui style to use for the fg highlight group.
@@ -57,6 +58,7 @@ local defaults = {
     info = { "DiagnosticInfo", "#2563EB" },
     hint = { "DiagnosticHint", "#10B981" },
     default = { "Identifier", "#7C3AED" },
+    test = { "Identifier", "#FF00FF" }
   },
   search = {
     command = "rg",
