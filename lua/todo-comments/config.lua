@@ -97,13 +97,19 @@ function M._setup()
     end
   end
 
-  local tags = table.concat(vim.tbl_keys(M.keywords), "|")
-  M.search_regex = M.options.search.pattern:gsub("KEYWORDS", tags)
+  local function tags(keywords)
+    return table.concat(keywords or vim.tbl_keys(M.keywords), "|")
+  end
+
+  function M.search_regex(keywords)
+    return M.options.search.pattern:gsub("KEYWORDS", tags(keywords))
+  end
+
   M.hl_regex = {}
   local patterns = M.options.highlight.pattern
   patterns = type(patterns) == "table" and patterns or { patterns }
   for _, p in pairs(patterns) do
-    p = p:gsub("KEYWORDS", tags)
+    p = p:gsub("KEYWORDS", tags())
     table.insert(M.hl_regex, p)
   end
   M.colors()
