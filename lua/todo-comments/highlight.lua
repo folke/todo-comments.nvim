@@ -131,8 +131,10 @@ function M.highlight(buf, first, last, _event)
       end
 
       -- tag highlights
-      if hl.keyword == "wide" then
+      if hl.keyword == "wide" or hl.keyword == "wide_bg" then
         add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
+      elseif hl.keyword == "wide_fg" then
+        add_highlight(buf, Config.ns, hl_fg, lnum, math.max(start - 1, 0), finish + 1)
       elseif hl.keyword == "bg" then
         add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
       elseif hl.keyword == "fg" then
