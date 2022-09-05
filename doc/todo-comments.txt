@@ -158,11 +158,23 @@ alt) followed by a colon:
 
 Todos are highlighted in all regular files.
 
-Each of the commands below can have an options argument to specify the
-directory to search for comments, like:
+Each of the commands below accept the following arguments:
+
+
+- `cwd` - Specify the directory to search for comments, like:
+
 
 >
     :TodoTrouble cwd=~/projects/foobar
+<
+
+
+
+- `keywords` - Comma separated list of keywords to filter results by. Keywords are case-sensitive.
+
+
+>
+    :TodoTelescope keywords=TODO,FIX
 <
 
 
