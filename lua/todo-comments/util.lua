@@ -29,16 +29,12 @@ function M.is_dark(hex)
   return lum <= 0.5
 end
 
-function M.log(msg, hl)
-  vim.api.nvim_echo({ { "Todo: ", hl }, { msg } }, true, {})
-end
-
 function M.warn(msg)
-  M.log(msg, "WarningMsg")
+  vim.notify(msg, vim.log.levels.WARN, { title = "TodoComments" })
 end
 
 function M.error(msg)
-  M.log(msg, "ErrorMsg")
+  vim.notify(msg, vim.log.levels.ERROR, { title = "TodoComments" })
 end
 
 return M
