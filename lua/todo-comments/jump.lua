@@ -5,7 +5,10 @@ local util = require("todo-comments.util")
 local M = {}
 
 ---@param up boolean
-local function jump(up)
+local function jump(up, opts)
+  opts = opts or {}
+  opts.keywords = opts.keywords or {}
+
   local win = vim.api.nvim_get_current_win()
   local buf = vim.api.nvim_get_current_buf()
 
@@ -29,6 +32,10 @@ local function jump(up)
       end
     end
 
+    if kw and #opts.keywords > 0 and not vim.tbl_contains(opts.keywords, kw) then
+      kw = nil
+    end
+
     if kw then
       vim.api.nvim_win_set_cursor(win, { l, start - 1 })
       return
@@ -45,14 +52,3 @@ function M.prev()
 end
 
 return M
-
--- PERF: fully optimised
--- HACK: hmmm, this looks a bit funky
--- TODO: What else?
--- NOTE: adding a note
--- FIX: this needs fixing
--- WARNING: ???
--- FIX: ddddd
--- todo: fooo
--- @TODO foobar
--- @hack foobar
