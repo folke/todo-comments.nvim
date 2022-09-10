@@ -58,7 +58,7 @@ local defaults = {
     info = { "DiagnosticInfo", "#2563EB" },
     hint = { "DiagnosticHint", "#10B981" },
     default = { "Identifier", "#7C3AED" },
-    test = { "Identifier", "#FF00FF" }
+    test = { "Identifier", "#FF00FF" },
   },
   search = {
     command = "rg",
@@ -80,12 +80,9 @@ M._options = nil
 
 function M.setup(options)
   M._options = options
-  -- lazy load setup after VimEnter
-  if vim.api.nvim_get_vvar("vim_did_enter") == 0 then
-    vim.cmd([[autocmd VimEnter * ++once lua require("todo-comments.config")._setup()]])
-  else
+  vim.defer_fn(function()
     M._setup()
-  end
+  end, 0)
 end
 
 function M._setup()
