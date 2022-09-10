@@ -181,7 +181,7 @@ function M.highlight_win(win, force)
   local last = vim.fn.line("w$")
   M.highlight(buf, first, last)
 
-  vim.api.nvim_set_current_win(current_win)
+  pcall(vim.api.nvim_set_current_win, current_win)
 end
 
 function M.is_float(win)
