@@ -174,6 +174,9 @@ function M.highlight_win(win, force)
   end
 
   local current_win = vim.api.nvim_get_current_win()
+  if not M.is_valid_win(current_win) then
+	return
+  end
   vim.api.nvim_set_current_win(win)
 
   local buf = vim.api.nvim_win_get_buf(win)
