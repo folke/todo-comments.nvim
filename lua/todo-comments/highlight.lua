@@ -173,7 +173,6 @@ function M.highlight_win(win, force)
     return
   end
 
-  vim.api.nvim_set_current_win(win)
   vim.api.nvim_win_call(win, function()
     local buf = vim.api.nvim_win_get_buf(win)
     local first = vim.fn.line("w0") - 1
