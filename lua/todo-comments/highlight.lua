@@ -173,15 +173,13 @@ function M.highlight_win(win, force)
     return
   end
 
-  local current_win = vim.api.nvim_get_current_win()
   vim.api.nvim_set_current_win(win)
-
-  local buf = vim.api.nvim_win_get_buf(win)
-  local first = vim.fn.line("w0") - 1
-  local last = vim.fn.line("w$")
-  M.highlight(buf, first, last)
-
-  pcall(vim.api.nvim_set_current_win, current_win)
+  vim.api.nvim_win_call(win, function()
+    local buf = vim.api.nvim_win_get_buf(win)
+    local first = vim.fn.line("w0") - 1
+    local last = vim.fn.line("w$")
+    M.highlight(buf, first, last)
+  end)
 end
 
 function M.is_float(win)
