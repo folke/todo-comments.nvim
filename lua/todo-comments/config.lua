@@ -80,9 +80,13 @@ M._options = nil
 
 function M.setup(options)
   M._options = options
-  vim.defer_fn(function()
+  if vim.api.nvim_get_vvar("vim_did_enter") == 0 then
+    vim.defer_fn(function()
+      M._setup()
+    end, 0)
+  else
     M._setup()
-  end, 0)
+  end
 end
 
 function M._setup()
