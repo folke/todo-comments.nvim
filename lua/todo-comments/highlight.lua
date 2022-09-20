@@ -17,6 +17,11 @@ M.wins = {}
 
 -- WARNING: with space immediately after
 
+-- FIXME: prevent trailing comments from being flagged
+local _dont_delete_me_this_is_a_test = {
+    blah = true -- trailing comment
+}
+
 -- todo: fooo
 -- @TODO foobar
 -- @hack foobar
@@ -120,6 +125,8 @@ function M.highlight(buf, first, last, _event)
         kw = last_match["kw"]
         start = last_match["start"]
         finish = last_match["finish"]
+      else
+        last_match = nil
       end
     end
 
