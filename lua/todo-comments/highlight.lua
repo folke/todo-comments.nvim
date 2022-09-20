@@ -12,6 +12,11 @@ M.wins = {}
 -- FIX: this needs fixing
 -- WARNING: ???
 -- FIX: ddddd
+-- TODO: Whoa, there's a huge problem here
+-- that I had to describe in a lot of detail
+
+-- WARNING: with space immediately after
+
 -- todo: fooo
 -- @TODO foobar
 -- @hack foobar
@@ -98,6 +103,7 @@ function M.highlight(buf, first, last, _event)
 
   local lines = vim.api.nvim_buf_get_lines(buf, first, last + 1, false)
 
+  local last_match = nil
   for l, line in ipairs(lines) do
     local ok, start, finish, kw = pcall(M.match, line)
     local lnum = first + l - 1
@@ -105,6 +111,15 @@ function M.highlight(buf, first, last, _event)
     if ok and start then
       if Config.options.highlight.comments_only and not M.is_quickfix(buf) and M.is_comment(buf, lnum) == false then
         kw = nil
+      end
+      last_match = nil
+    else
+      if #line == 0 then
+        last_match = nil
+      elseif Config.options.highlight.comments_only and Config.options.highlight.multiline and not M.is_quickfix(buf) and M.is_comment(buf, lnum) == true and last_match ~= nil then
+        kw = last_match["kw"]
+        start = last_match["start"]
+        finish = last_match["finish"]
       end
     end
 
@@ -131,14 +146,16 @@ function M.highlight(buf, first, last, _event)
       end
 
       -- tag highlights
-      if hl.keyword == "wide" or hl.keyword == "wide_bg" then
-        add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
-      elseif hl.keyword == "wide_fg" then
-        add_highlight(buf, Config.ns, hl_fg, lnum, math.max(start - 1, 0), finish + 1)
-      elseif hl.keyword == "bg" then
-        add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
-      elseif hl.keyword == "fg" then
-        add_highlight(buf, Config.ns, hl_fg, lnum, start, finish)
+      if start ~= finish then
+        if hl.keyword == "wide" or hl.keyword == "wide_bg" then
+          add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
+        elseif hl.keyword == "wide_fg" then
+          add_highlight(buf, Config.ns, hl_fg, lnum, math.max(start - 1, 0), finish + 1)
+        elseif hl.keyword == "bg" then
+          add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
+        elseif hl.keyword == "fg" then
+          add_highlight(buf, Config.ns, hl_fg, lnum, start, finish)
+        end
       end
 
       -- after highlights
@@ -153,6 +170,10 @@ function M.highlight(buf, first, last, _event)
       if opts.signs ~= nil then
         show_sign = opts.signs
       end
+
+      if last_match ~= nil then
+        show_sign = false
+      end
       if show_sign then
         vim.fn.sign_place(
           0,
@@ -162,6 +183,7 @@ function M.highlight(buf, first, last, _event)
           { lnum = lnum + 1, priority = Config.options.sign_priority }
         )
       end
+      last_match = {kw = kw, start = start + 1, finish = start + 1}
     end
   end
 end
