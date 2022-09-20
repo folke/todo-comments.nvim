@@ -119,9 +119,7 @@ function M.highlight(buf, first, last, _event)
       end
       last_match = nil
     else
-      if #line == 0 then
-        last_match = nil
-      elseif Config.options.highlight.comments_only and Config.options.highlight.multiline and not M.is_quickfix(buf) and M.is_comment(buf, lnum) == true and last_match ~= nil then
+      if Config.options.highlight.comments_only and Config.options.highlight.multiline and not M.is_quickfix(buf) and M.is_comment(buf, lnum) == true and last_match ~= nil then
         kw = last_match["kw"]
         start = last_match["start"]
         finish = last_match["finish"]
