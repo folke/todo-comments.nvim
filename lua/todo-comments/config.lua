@@ -80,14 +80,13 @@ local defaults = {
 M._options = nil
 
 function M.setup(options)
-  M._options = options
   vim.defer_fn(function()
-    M._setup()
+    M._setup(options)
   end, 0)
 end
 
-function M._setup()
-  M.options = vim.tbl_deep_extend("force", {}, defaults, M.options or {}, M._options or {})
+function M._setup(options)
+  M.options = vim.tbl_deep_extend("force", {}, defaults, M.options or {}, options)
 
   -- -- keywords should always be fully overriden
   if M._options and M._options.keywords and M._options.merge_keywords == false then
