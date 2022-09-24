@@ -12,10 +12,14 @@ M.wins = {}
 -- FIX: this needs fixing
 -- WARNING: ???
 -- FIX: ddddd
+--
 -- TODO: Whoa, there's a huge problem here
--- that I had to describe in a lot of detail
+--       that I had to describe in a lot of detail
+-- but this isn't part of it
 
 -- WARNING: with space immediately after
+--          to check if this multiline works too
+--         and doesn't highlight this, it's too short
 
 -- FIXME: prevent trailing comments from being flagged
 local _dont_delete_me_this_is_a_test = {
@@ -90,6 +94,27 @@ local function add_highlight(buffer, ns, hl, line, from, to)
   vim.api.nvim_buf_add_highlight(buffer, ns, hl, line, from, to)
 end
 
+local function is_multiline_todo(buf, lnum, line, last_match)
+  if not Config.options.highlight.comments_only or not Config.options.highlight.multiline or M.is_quickfix(buf) or not M.is_comment(buf, lnum) or last_match == nil then
+      return false
+  end
+  -- finish in last_match is where the match ended on the previous line, and we
+  -- know the keyword too. So character at finish should be preceded by a
+  -- number of spaces at least equal to the length of the match
+  -- we also have to be careful with tabs
+  local without_tabs = line:gsub("\t", string.rep(" ", vim.o.tabstop))
+  -- add 1 to account for the colon after the keyword
+  local fin = last_match["finish"] + 1
+  local kw = last_match["kw"]
+  local substring = without_tabs:sub(fin - #kw, fin)
+  if substring ~= string.rep(" ", #substring) then
+      return false
+  end
+
+  -- use greater than to account for colon
+  return #substring > #kw
+end
+
 -- highlights the range for the given buf
 function M.highlight(buf, first, last, _event)
   -- print("highlight: [" .. first .. ", " .. last .. "] " .. tostring(event))
@@ -119,7 +144,7 @@ function M.highlight(buf, first, last, _event)
       end
       last_match = nil
     else
-      if Config.options.highlight.comments_only and Config.options.highlight.multiline and not M.is_quickfix(buf) and M.is_comment(buf, lnum) == true and last_match ~= nil then
+      if is_multiline_todo(buf, lnum, line, last_match) then
         kw = last_match["kw"]
         start = last_match["start"]
         finish = last_match["finish"]
@@ -188,7 +213,9 @@ function M.highlight(buf, first, last, _event)
           { lnum = lnum + 1, priority = Config.options.sign_priority }
         )
       end
-      last_match = {kw = kw, start = start + 1, finish = start + 1}
+      if Config.options.highlight.multiline then
+        last_match = {kw = kw, start = finish + 1, finish = finish + 1}
+      end
     end
   end
 end
