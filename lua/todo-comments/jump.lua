@@ -44,11 +44,11 @@ local function jump(up, opts)
   util.warn("No more todo comments to jump to")
 end
 
-function M.next()
-  jump(false)
+function M.next(opts)
+  jump(false, opts)
 end
-function M.prev()
-  jump(true)
+function M.prev(opts)
+  jump(true, opts)
 end
 
 return M
