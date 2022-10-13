@@ -173,9 +173,14 @@ function M.colors()
     end
     local fg = Util.is_dark(hex) and fg_light or fg_dark
 
-    vim.cmd("hi def TodoBg" .. kw .. " guibg=" .. hex .. " guifg=" .. fg .. " gui=" .. bg_gui)
-    vim.cmd("hi def TodoFg" .. kw .. " guibg=NONE guifg=" .. hex .. " gui=" .. fg_gui)
-    vim.cmd("hi def TodoSign" .. kw .. " guibg=" .. sign_bg .. " guifg=" .. hex .. " gui=NONE")
+    vim.cmd("hi DefaultTodoBg" .. kw .. " guibg=" .. hex .. " guifg=" .. fg .. " gui=" .. bg_gui)
+    vim.cmd("hi def link TodoBg" .. kw .. " DefaultTodoBg" .. kw)
+
+    vim.cmd("hi DefaultTodoFg" .. kw .. " guibg=NONE guifg=" .. hex .. " gui=" .. fg_gui)
+    vim.cmd("hi def link TodoFg" .. kw .. " DefaultTodoFg" .. kw)
+
+    vim.cmd("hi DefaultTodoSign" .. kw .. " guibg=" .. sign_bg .. " guifg=" .. hex .. " gui=NONE")
+    vim.cmd("hi def link TodoSign" .. kw .. " DefaultTodoSign" .. kw)
   end
 end
 
