@@ -79,6 +79,9 @@ local defaults = {
 M._options = nil
 
 function M.setup(options)
+  if vim.fn.has("nvim-0.8.0") == 0 then
+    error("todo-comments needs Neovim >= 0.8.0. Use the 'neovim-pre-0.8.0' branch for older versions")
+  end
   M._options = options
   if vim.api.nvim_get_vvar("vim_did_enter") == 0 then
     vim.defer_fn(function()

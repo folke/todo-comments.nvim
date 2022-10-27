@@ -16,7 +16,7 @@
 
 ## ⚡️ Requirements
 
-- Neovim >= 0.5.0
+- Neovim >= 0.8.0 (use the `neovim-pre-0.8.0` branch for older versions)
 - a [patched font](https://www.nerdfonts.com/) for the icons, or change them to simple ASCII characters
 - optional:
   - [ripgrep](https://github.com/BurntSushi/ripgrep) and [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) are used for searching.
