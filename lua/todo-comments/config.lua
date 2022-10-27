@@ -40,6 +40,7 @@ local defaults = {
   -- * keyword: highlights of the keyword
   -- * after: highlights after the keyword (todo text)
   highlight = {
+    multiline = true, -- enable multine todo comments
     before = "", -- "fg" or "bg" or empty
     keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
     after = "fg", -- "fg" or "bg" or empty

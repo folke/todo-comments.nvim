@@ -12,7 +12,7 @@ M.wins = {}
 -- FIX: this needs fixing
 -- WARNING: ???
 -- FIX: ddddd
--- todo: fooo
+--  continuation
 -- @TODO foobar
 -- @hack foobar
 
@@ -77,17 +77,36 @@ function M.highlight(buf, first, last, _event)
 
   local lines = vim.api.nvim_buf_get_lines(buf, first, last + 1, false)
 
+  ---@type {kw: string, start:integer}?
+  local last
+
   for l, line in ipairs(lines) do
     local ok, start, finish, kw = pcall(M.match, line)
     local lnum = first + l - 1
 
     if ok and start then
+      ---@cast kw string
       if
         Config.options.highlight.comments_only
         and not M.is_quickfix(buf)
         and M.is_comment(buf, lnum, start - 1) == false
       then
         kw = nil
+      else
+        last = { kw = kw, start = start }
+      end
+    end
+
+    local is_multiline = false
+
+    if not kw and last and Config.options.highlight.multiline then
+      if M.is_comment(buf, lnum, last.start) and line:find("^%s", last.start) then
+        kw = last.kw
+        start = last.start
+        finish = start
+        is_multiline = true
+      else
+        last = nil
       end
     end
 
@@ -106,22 +125,24 @@ function M.highlight(buf, first, last, _event)
 
       local hl = Config.options.highlight
 
-      -- before highlights
-      if hl.before == "fg" then
-        add_highlight(buf, Config.ns, hl_fg, lnum, 0, start)
-      elseif hl.before == "bg" then
-        add_highlight(buf, Config.ns, hl_bg, lnum, 0, start)
-      end
+      if not is_multiline then
+        -- before highlights
+        if hl.before == "fg" then
+          add_highlight(buf, Config.ns, hl_fg, lnum, 0, start)
+        elseif hl.before == "bg" then
+          add_highlight(buf, Config.ns, hl_bg, lnum, 0, start)
+        end
 
-      -- tag highlights
-      if hl.keyword == "wide" or hl.keyword == "wide_bg" then
-        add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
-      elseif hl.keyword == "wide_fg" then
-        add_highlight(buf, Config.ns, hl_fg, lnum, math.max(start - 1, 0), finish + 1)
-      elseif hl.keyword == "bg" then
-        add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
-      elseif hl.keyword == "fg" then
-        add_highlight(buf, Config.ns, hl_fg, lnum, start, finish)
+        -- tag highlights
+        if hl.keyword == "wide" or hl.keyword == "wide_bg" then
+          add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
+        elseif hl.keyword == "wide_fg" then
+          add_highlight(buf, Config.ns, hl_fg, lnum, math.max(start - 1, 0), finish + 1)
+        elseif hl.keyword == "bg" then
+          add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
+        elseif hl.keyword == "fg" then
+          add_highlight(buf, Config.ns, hl_fg, lnum, start, finish)
+        end
       end
 
       -- after highlights
@@ -223,7 +244,7 @@ function M.attach(win)
         end
 
         -- HACK: use defer, because treesitter resets highlights
-        M.highlight(buf, first, last_new, "buf:on_lines")
+        M.highlight(buf, math.max(first - 10, 0), last_new, "buf:on_lines")
       end,
       on_detach = function()
         M.bufs[buf] = nil
