@@ -39,35 +39,14 @@ function M.match(str, patterns)
 end
 
 -- This method returns nil if this buf doesn't have a treesitter parser
--- @return true or false otherwise
-function M.is_comment(buf, line)
-  local highlighter = require("vim.treesitter.highlighter")
-  local hl = highlighter.active[buf]
-
-  if not hl then
-    return
+--- @return boolean? true or false otherwise
+function M.is_comment(buf, row, col)
+  local captures = vim.treesitter.get_captures_at_pos(buf, row, col)
+  for _, c in ipairs(captures) do
+    if c.capture == "comment" then
+      return true
+    end
   end
-
-  local is_comment = false
-  hl.tree:for_each_tree(function(tree, lang_tree)
-    if is_comment then
-      return
-    end
-
-    local query = hl:get_query(lang_tree:lang())
-    if not (query and query:query()) then
-      return
-    end
-
-    local iter = query:query():iter_captures(tree:root(), buf, line, line + 1)
-
-    for capture, _ in iter do
-      if query._query.captures[capture] == "comment" then
-        is_comment = true
-      end
-    end
-  end)
-  return is_comment
 end
 
 local function add_highlight(buffer, ns, hl, line, from, to)
@@ -103,7 +82,11 @@ function M.highlight(buf, first, last, _event)
     local lnum = first + l - 1
 
     if ok and start then
-      if Config.options.highlight.comments_only and not M.is_quickfix(buf) and M.is_comment(buf, lnum) == false then
+      if
+        Config.options.highlight.comments_only
+        and not M.is_quickfix(buf)
+        and M.is_comment(buf, lnum, start - 1) == false
+      then
         kw = nil
       end
     end
