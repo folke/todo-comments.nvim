@@ -155,19 +155,21 @@ function M.highlight(buf, first, last, _event)
         add_highlight(buf, Config.ns, hl_bg, lnum, finish, #line)
       end
 
-      -- signs
-      local show_sign = Config.options.signs
-      if opts.signs ~= nil then
-        show_sign = opts.signs
-      end
-      if show_sign then
-        vim.fn.sign_place(
-          0,
-          "todo-signs",
-          "todo-sign-" .. kw,
-          buf,
-          { lnum = lnum + 1, priority = Config.options.sign_priority }
-        )
+      if not is_multiline then
+        -- signs
+        local show_sign = Config.options.signs
+        if opts.signs ~= nil then
+          show_sign = opts.signs
+        end
+        if show_sign then
+          vim.fn.sign_place(
+            0,
+            "todo-signs",
+            "todo-sign-" .. kw,
+            buf,
+            { lnum = lnum + 1, priority = Config.options.sign_priority }
+          )
+        end
       end
     end
   end
