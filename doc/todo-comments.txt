@@ -35,7 +35,7 @@ todo comments like `TODO`, `HACK`, `BUG` in your code base.
 ⚡️ REQUIREMENTS                        *todo-comments-⚡️-requirements*
 
 
-- Neovim >= 0.5.0
+- Neovim >= 0.8.0 (use the `neovim-pre-0.8.0` branch for older versions)
 - a patched font <https://www.nerdfonts.com/> for the icons, or change them to simple ASCII characters
 - optional:
     - ripgrep <https://github.com/BurntSushi/ripgrep> and plenary.nvim <https://github.com/nvim-lua/plenary.nvim> are used for searching.
@@ -115,6 +115,7 @@ Todo comes with the following defaults:
       -- * keyword: highlights of the keyword
       -- * after: highlights after the keyword (todo text)
       highlight = {
+        multiline = true, -- enable multine todo comments
         before = "", -- "fg" or "bg" or empty
         keyword = "wide", -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
         after = "fg", -- "fg" or "bg" or empty
