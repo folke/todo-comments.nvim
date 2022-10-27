@@ -12,7 +12,7 @@ M.wins = {}
 -- FIX: this needs fixing
 -- WARNING: ???
 -- FIX: ddddd
---  continuation
+--       continuation
 -- @TODO foobar
 -- @hack foobar
 
@@ -78,7 +78,7 @@ function M.highlight(buf, first, last, _event)
   local lines = vim.api.nvim_buf_get_lines(buf, first, last + 1, false)
 
   ---@type {kw: string, start:integer}?
-  local last
+  local last_match
 
   for l, line in ipairs(lines) do
     local ok, start, finish, kw = pcall(M.match, line)
@@ -93,20 +93,23 @@ function M.highlight(buf, first, last, _event)
       then
         kw = nil
       else
-        last = { kw = kw, start = start }
+        last_match = { kw = kw, start = start }
       end
     end
 
     local is_multiline = false
 
-    if not kw and last and Config.options.highlight.multiline then
-      if M.is_comment(buf, lnum, last.start) and line:find("^%s", last.start) then
-        kw = last.kw
-        start = last.start
+    if not kw and last_match and Config.options.highlight.multiline then
+      if
+        M.is_comment(buf, lnum, last_match.start)
+        and line:find(Config.options.highlight.multiline_pattern, last_match.start)
+      then
+        kw = last_match.kw
+        start = last_match.start
         finish = start
         is_multiline = true
       else
-        last = nil
+        last_match = nil
       end
     end
 
@@ -244,7 +247,12 @@ function M.attach(win)
         end
 
         -- HACK: use defer, because treesitter resets highlights
-        M.highlight(buf, math.max(first - 10, 0), last_new, "buf:on_lines")
+        M.highlight(
+          buf,
+          math.max(first - Config.options.highlight.multiline_context, 0),
+          last_new + Config.options.highlight.multiline_context,
+          "buf:on_lines"
+        )
       end,
       on_detach = function()
         M.bufs[buf] = nil
