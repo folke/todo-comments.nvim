@@ -89,7 +89,7 @@ function M.highlight(buf, first, last, _event)
       if
         Config.options.highlight.comments_only
         and not M.is_quickfix(buf)
-        and M.is_comment(buf, lnum, start - 1) == false
+        and not M.is_comment(buf, lnum, start - 1)
       then
         kw = nil
       else
