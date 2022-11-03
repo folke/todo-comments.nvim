@@ -42,7 +42,7 @@ end
 --- @return boolean? true or false otherwise
 function M.is_comment(buf, row, col)
   if vim.treesitter.highlighter.active[buf] then
-    local captures = vim.treesitter.get_captures_at_pos(buf, row, col)
+    local captures = vim.treesitter.get_captures_at_position(buf, row, col)
     for _, c in ipairs(captures) do
       if c.capture == "comment" then
         return true
