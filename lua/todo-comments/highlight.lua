@@ -1,3 +1,6 @@
+-- FIX: dddddd
+-- TODO: foobar
+-- dddddd
 local Config = require("todo-comments.config")
 
 local M = {}
@@ -6,9 +9,12 @@ M.bufs = {}
 M.wins = {}
 
 -- PERF: fully optimised
+-- FIX: ddddddasdasdasdasdasda
+-- ddddddd
 -- HACK: hmmm, this looks a bit funky
 -- TODO: What else?
 -- NOTE: adding a note
+--
 -- FIX: this needs fixing
 -- WARNING: ???
 -- FIX: ddddd
@@ -81,6 +87,9 @@ function M.highlight(buf, first, last, _event)
   if not vim.api.nvim_buf_is_valid(buf) then
     return
   end
+
+  first = math.max(first - Config.options.highlight.multiline_context, 0)
+  last = math.max(last + Config.options.highlight.multiline_context, vim.api.nvim_buf_line_count(buf))
   vim.api.nvim_buf_clear_namespace(buf, Config.ns, first, last + 1)
 
   -- clear signs
@@ -263,13 +272,7 @@ function M.attach(win)
           return true
         end
 
-        -- HACK: use defer, because treesitter resets highlights
-        M.highlight(
-          buf,
-          math.max(first - Config.options.highlight.multiline_context, 0),
-          last_new + Config.options.highlight.multiline_context,
-          "buf:on_lines"
-        )
+        M.highlight(buf, first, last_new, "buf:on_lines")
       end,
       on_detach = function()
         M.bufs[buf] = nil
@@ -281,6 +284,11 @@ function M.attach(win)
     if hl then
       -- also listen to TS changes so we can properly update the buffer based on is_comment
       hl.tree:register_cbs({
+        on_bytes = function(_, _, row)
+          vim.schedule(function()
+            M.highlight(buf, row, row + 1, "on_bytes")
+          end)
+        end,
         on_changedtree = function(changes)
           for _, ch in ipairs(changes or {}) do
             vim.defer_fn(function()
