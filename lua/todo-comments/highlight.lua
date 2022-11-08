@@ -67,7 +67,7 @@ function M.is_comment(buf, row, col)
     local win = vim.fn.bufwinid(buf)
     return win ~= -1
       and vim.api.nvim_win_call(win, function()
-        for _, i1 in ipairs(vim.fn.synstack(1, 1)) do
+        for _, i1 in ipairs(vim.fn.synstack(row + 1, col)) do
           local i2 = vim.fn.synIDtrans(i1)
           local n1 = vim.fn.synIDattr(i1, "name")
           local n2 = vim.fn.synIDattr(i2, "name")
