@@ -10,7 +10,12 @@ M.wins = {}
 
 -- PERF: fully optimised
 -- FIX: ddddddasdasdasdasdasda
+-- PERF: dddd
+-- ddddd
+-- dddddd
 -- ddddddd
+-- FIXME: dddddd
+-- FIX: ddd
 -- HACK: hmmm, this looks a bit funky
 -- TODO: What else?
 -- NOTE: adding a note
@@ -21,6 +26,10 @@ M.wins = {}
 --       continuation
 -- @TODO foobar
 -- @hack foobar
+
+---@alias TodoDirty table<number, boolean>
+---@type table<buffer, {dirty:TodoDirty}>
+M.state = {}
 
 function M.match(str, patterns)
   local max_line_len = Config.options.highlight.max_line_len
@@ -80,16 +89,62 @@ local function add_highlight(buffer, ns, hl, line, from, to)
   vim.api.nvim_buf_add_highlight(buffer, ns, hl, line, from, to)
 end
 
+function M.get_state(buf)
+  if not M.state[buf] then
+    M.state[buf] = { dirty = {}, comments = {} }
+  end
+  return M.state[buf]
+end
+
+function M.redraw(buf, first, last)
+  first = math.max(first - Config.options.highlight.multiline_context, 0)
+  last = math.max(last + Config.options.highlight.multiline_context, vim.api.nvim_buf_line_count(buf))
+  local state = M.get_state(buf)
+  for i = first, last do
+    state.dirty[i] = true
+  end
+  if not M.timer then
+    M.timer = vim.defer_fn(M.update, Config.options.highlight.throttle)
+  end
+end
+
+---@type vim.loop.Timer
+M.timer = nil
+
+function M.update()
+  M.timer = nil
+  for buf, state in pairs(M.state) do
+    if vim.api.nvim_buf_is_valid(buf) then
+      if not vim.tbl_isempty(state.dirty) then
+        local dirty = vim.tbl_keys(state.dirty)
+        table.sort(dirty)
+
+        local i = 1
+        while i <= #dirty do
+          local first = dirty[i]
+          local last = dirty[i]
+          while dirty[i + 1] == dirty[i] + 1 do
+            i = i + 1
+            last = dirty[i]
+          end
+          M.highlight(buf, first, last)
+          i = i + 1
+        end
+
+        state.dirty = {}
+      end
+    else
+      M.state[buf] = nil
+    end
+  end
+end
+
 -- highlights the range for the given buf
 function M.highlight(buf, first, last, _event)
-  -- print("highlight: [" .. first .. ", " .. last .. "] " .. tostring(event))
-  -- vim.api.nvim_err_writeln(vim.inspect({ first, last }))
   if not vim.api.nvim_buf_is_valid(buf) then
     return
   end
 
-  first = math.max(first - Config.options.highlight.multiline_context, 0)
-  last = math.max(last + Config.options.highlight.multiline_context, vim.api.nvim_buf_line_count(buf))
   vim.api.nvim_buf_clear_namespace(buf, Config.ns, first, last + 1)
 
   -- clear signs
@@ -210,7 +265,7 @@ function M.highlight_win(win, force)
     local buf = vim.api.nvim_win_get_buf(win)
     local first = vim.fn.line("w0") - 1
     local last = vim.fn.line("w$")
-    M.highlight(buf, first, last)
+    M.redraw(buf, first, last)
   end)
 end
 
@@ -272,9 +327,10 @@ function M.attach(win)
           return true
         end
 
-        M.highlight(buf, first, last_new, "buf:on_lines")
+        M.redraw(buf, first, last_new)
       end,
       on_detach = function()
+        M.state[buf] = nil
         M.bufs[buf] = nil
       end,
     })
@@ -285,15 +341,11 @@ function M.attach(win)
       -- also listen to TS changes so we can properly update the buffer based on is_comment
       hl.tree:register_cbs({
         on_bytes = function(_, _, row)
-          vim.schedule(function()
-            M.highlight(buf, row, row + 1, "on_bytes")
-          end)
+          M.redraw(buf, row, row + 1)
         end,
         on_changedtree = function(changes)
           for _, ch in ipairs(changes or {}) do
-            vim.defer_fn(function()
-              M.highlight(buf, ch[1], ch[3] + 1, "on_changedtree")
-            end, 0)
+            M.redraw(buf, ch[1], ch[3] + 1)
           end
         end,
       })
