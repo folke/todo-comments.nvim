@@ -27,7 +27,7 @@ local function jump(up, opts)
     local ok, start, _, kw = pcall(highlight.match, line)
 
     if ok and start then
-      if config.options.highlight.comments_only and highlight.is_comment(buf, l - 1) == false then
+      if config.options.highlight.comments_only and highlight.is_comment(buf, l - 1, start) == false then
         kw = nil
       end
     end
