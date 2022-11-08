@@ -97,8 +97,8 @@ function M.get_state(buf)
 end
 
 function M.redraw(buf, first, last)
-  first = math.max(first - Config.options.highlight.multiline_context, 0)
-  last = math.max(last + Config.options.highlight.multiline_context, vim.api.nvim_buf_line_count(buf))
+  first = math.max(vim.fn.line('w0') - Config.options.highlight.multiline_context, 0)
+  last = math.min(vim.fn.line('w$') + Config.options.highlight.multiline_context, vim.api.nvim_buf_line_count(buf))
   local state = M.get_state(buf)
   for i = first, last do
     state.dirty[i] = true
