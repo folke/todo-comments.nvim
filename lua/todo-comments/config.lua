@@ -112,7 +112,11 @@ function M._setup()
   end
 
   local function tags(keywords)
-    return table.concat(keywords or vim.tbl_keys(M.keywords), "|")
+    local kws = keywords or vim.tbl_keys(M.keywords)
+    table.sort(kws, function(a, b)
+      return #b < #a
+    end)
+    return table.concat(kws, "|")
   end
 
   function M.search_regex(keywords)
