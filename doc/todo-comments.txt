@@ -1,4 +1,4 @@
-*todo-comments.txt*        For NVIM v0.5.0       Last change: 2022 November 16
+*todo-comments.txt*        For NVIM v0.5.0       Last change: 2022 December 14
 
 ==============================================================================
 Table of Contents                            *todo-comments-table-of-contents*
@@ -130,7 +130,7 @@ Todo comes with the following defaults:
       -- list of highlight groups or use the hex color if hl not found as a fallback
       colors = {
         error = { "DiagnosticError", "ErrorMsg", "#DC2626" },
-        warning = { "DiagnosticWarning", "WarningMsg", "#FBBF24" },
+        warning = { "DiagnosticWarn", "WarningMsg", "#FBBF24" },
         info = { "DiagnosticInfo", "#2563EB" },
         hint = { "DiagnosticHint", "#10B981" },
         default = { "Identifier", "#7C3AED" },
