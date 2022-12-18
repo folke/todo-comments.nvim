@@ -4,6 +4,7 @@ local Util = require("todo-comments.util")
 local M = {}
 
 M.keywords = {}
+M.keyword_regex = {}
 --- @type TodoOptions
 M.options = {}
 M.loaded = false
@@ -106,21 +107,44 @@ function M._setup()
 
   for kw, opts in pairs(M.options.keywords) do
     M.keywords[kw] = kw
+    M.keyword_regex[kw] = opts.regex
     for _, alt in pairs(opts.alt or {}) do
       M.keywords[alt] = kw
     end
   end
 
   local function tags(keywords)
-    local kws = keywords or vim.tbl_keys(M.keywords)
+    local kws = {}
+    -- local kws = keywords or vim.tbl_keys(M.keywords)
+
+    for _, kw in pairs(keywords or {}) do
+      local possible_regex = M.keyword_regex[kw]
+      if possible_regex then
+        table.insert(kws, possible_regex)
+      else
+        table.insert(kws, string.format("\\b%s", kw))
+      end
+    end
+
     table.sort(kws, function(a, b)
       return #b < #a
     end)
+
     return table.concat(kws, "|")
   end
 
   function M.search_regex(keywords)
+    -- local kws_regex = {}
+    --
+    -- for _, kw in pairs(keywords or {}) do
+    --   table.insert(kws_regex, M.keyword_regex[kw])
+    -- end
+    --
+    -- if kws_regex then
+    --   return table.concat(kws_regex, "|")
+    -- else
     return M.options.search.pattern:gsub("KEYWORDS", tags(keywords))
+    -- end
   end
 
   M.hl_regex = {}
