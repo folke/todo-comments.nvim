@@ -108,14 +108,22 @@ function M._setup()
   for kw, opts in pairs(M.options.keywords) do
     M.keywords[kw] = kw
     M.keyword_regex[kw] = opts.regex
-    for _, alt in pairs(opts.alt or {}) do
-      M.keywords[alt] = kw
+    for idx, alt in pairs(opts.alt or {}) do
+      if type(idx) == "number" then
+        M.keywords[alt] = kw
+      else
+        M.keywords[idx] = kw
+        if type(alt) == "string" then
+          M.keyword_regex[idx] = alt
+        else
+          M.keyword_regex[idx] = alt.regex
+        end
+      end
     end
   end
 
   local function tags(keywords)
     local kws = {}
-    -- local kws = keywords or vim.tbl_keys(M.keywords)
 
     for _, kw in pairs(keywords or {}) do
       local possible_regex = M.keyword_regex[kw]
