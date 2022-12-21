@@ -106,61 +106,49 @@ function M._setup()
   end
 
   for kw, opts in pairs(M.options.keywords) do
-    M.keywords[kw] = kw
-    M.keyword_regex[kw] = opts.regex
     for idx, alt in pairs(opts.alt or {}) do
       if type(idx) == "number" then
         M.keywords[alt] = kw
       else
         M.keywords[idx] = kw
-        if type(alt) == "string" then
-          M.keyword_regex[idx] = alt
-        else
-          M.keyword_regex[idx] = alt.regex
-        end
+        M.keyword_regex[idx] = alt
       end
     end
   end
 
   local function tags(keywords)
+    local kws_input = keywords or vim.tbl_keys(M.keywords)
     local kws = {}
-
-    for _, kw in pairs(keywords or {}) do
+    for _, kw in pairs(kws_input or {}) do
       local possible_regex = M.keyword_regex[kw]
       if possible_regex then
-        table.insert(kws, possible_regex)
+        kws[kw] = possible_regex
       else
-        table.insert(kws, string.format("\\b%s", kw))
+        kws[kw] = string.format([[%s]], kw) 
       end
     end
-
     table.sort(kws, function(a, b)
       return #b < #a
     end)
 
-    return table.concat(kws, "|")
+    return kws
   end
 
   function M.search_regex(keywords)
-    -- local kws_regex = {}
-    --
-    -- for _, kw in pairs(keywords or {}) do
-    --   table.insert(kws_regex, M.keyword_regex[kw])
-    -- end
-    --
-    -- if kws_regex then
-    --   return table.concat(kws_regex, "|")
-    -- else
-    return M.options.search.pattern:gsub("KEYWORDS", tags(keywords))
-    -- end
+    local kws = vim.tbl_values(tags(keywords))
+    return M.options.search.pattern:gsub("KEYWORDS", table.concat(kws, "|"))
   end
 
   M.hl_regex = {}
   local patterns = M.options.highlight.pattern
   patterns = type(patterns) == "table" and patterns or { patterns }
-  for _, p in pairs(patterns) do
-    p = p:gsub("KEYWORDS", tags())
-    table.insert(M.hl_regex, p)
+
+  local tags = tags()
+  for kw, regex in pairs(tags) do
+    for _, p in pairs(patterns) do
+    p = p:gsub("KEYWORDS", regex)
+    M.hl_regex[kw] = p
+    end
   end
   M.colors()
   M.signs()
