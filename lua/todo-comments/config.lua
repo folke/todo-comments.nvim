@@ -106,25 +106,29 @@ function M._setup()
   end
 
   for kw, opts in pairs(M.options.keywords) do
-    M.keywords[kw] = kw
-    M.keyword_regex[kw] = opts.regex
+    -- M.keywords[kw] = kw
+    -- for _, alt in pairs(opts.alt or {}) do
+    --   M.keywords[alt] = kw
+    -- end
+
     for idx, alt in pairs(opts.alt or {}) do
       if type(idx) == "number" then
         M.keywords[alt] = kw
       else
         M.keywords[idx] = kw
-        if type(alt) == "string" then
-          M.keyword_regex[idx] = alt
-        else
-          M.keyword_regex[idx] = alt.regex
-        end
+        M.keyword_regex[idx] = alt
       end
     end
+
   end
 
   local function tags(keywords)
-    local kws = {}
+    -- local kws = keywords or vim.tbl_keys(M.keywords)
+    -- table.sort(kws, function(a, b)
+    --   return #b < #a
+    -- end)
 
+    local kws = {}
     for _, kw in pairs(keywords or {}) do
       local possible_regex = M.keyword_regex[kw]
       if possible_regex then
@@ -134,25 +138,11 @@ function M._setup()
       end
     end
 
-    table.sort(kws, function(a, b)
-      return #b < #a
-    end)
-
     return table.concat(kws, "|")
   end
 
   function M.search_regex(keywords)
-    -- local kws_regex = {}
-    --
-    -- for _, kw in pairs(keywords or {}) do
-    --   table.insert(kws_regex, M.keyword_regex[kw])
-    -- end
-    --
-    -- if kws_regex then
-    --   return table.concat(kws_regex, "|")
-    -- else
     return M.options.search.pattern:gsub("KEYWORDS", tags(keywords))
-    -- end
   end
 
   M.hl_regex = {}
