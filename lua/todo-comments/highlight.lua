@@ -43,12 +43,12 @@ function M.match(str, patterns)
     patterns = { patterns }
   end
 
-  for _, pattern in pairs(patterns) do
+  for kw, pattern in pairs(patterns) do
     local m = vim.fn.matchlist(str, [[\v\C]] .. pattern)
     if #m > 1 and m[2] then
-      local kw = m[2]
-      local start = str:find(kw)
-      return start, start + #kw, kw
+      local txt = m[2]
+      local start = vim.fn.stridx(str, txt)
+      return start, start + #txt, kw
     end
   end
 end
