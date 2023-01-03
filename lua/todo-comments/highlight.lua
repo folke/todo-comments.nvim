@@ -199,7 +199,7 @@ function M.highlight(buf, first, last, _event)
     local opts = Config.options.keywords[kw]
 
     if opts then
-      start = start - 1
+      start = start + 1
       finish = finish - 1
 
       local hl_fg = "TodoFg" .. kw

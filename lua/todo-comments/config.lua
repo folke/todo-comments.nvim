@@ -116,7 +116,9 @@ function M._setup()
     end
   end
 
-  local function tags(keywords)
+  local function tags(keywords, boundary1, boundary2)
+    boundary1 = boundary1 or ""
+    boundary2 = boundary2 or ""
     local kws_input = keywords or vim.tbl_keys(M.keywords)
     local kws = {}
     for _, kw in pairs(kws_input or {}) do
@@ -124,18 +126,17 @@ function M._setup()
       if possible_regex then
         kws[kw] = possible_regex
       else
-        kws[kw] = string.format([[%s]], kw) 
+        kws[kw] = string.format([[%s%s%s]], boundary1, kw, boundary2) -- add in vimgrep word boundary char `<`
       end
     end
     table.sort(kws, function(a, b)
       return #b < #a
     end)
-
     return kws
   end
 
   function M.search_regex(keywords)
-    local kws = vim.tbl_values(tags(keywords))
+    local kws = vim.tbl_values(tags(keywords, "\\b", "\\b"))
     return M.options.search.pattern:gsub("KEYWORDS", table.concat(kws, "|"))
   end
 
@@ -143,8 +144,8 @@ function M._setup()
   local patterns = M.options.highlight.pattern
   patterns = type(patterns) == "table" and patterns or { patterns }
 
-  local tags = tags()
-  for kw, regex in pairs(tags) do
+  for kw, regex in pairs(tags(nil, "<", ">")) do
+  -- for kw, regex in pairs(tags(nil)) do
     for _, p in pairs(patterns) do
     p = p:gsub("KEYWORDS", regex)
     M.hl_regex[kw] = p
