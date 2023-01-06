@@ -106,6 +106,7 @@ function M._setup()
   end
 
   for kw, opts in pairs(M.options.keywords) do
+    M.keywords[kw] = kw
     for idx, alt in pairs(opts.alt or {}) do
       if type(idx) == "number" then
         M.keywords[alt] = kw
@@ -126,7 +127,7 @@ function M._setup()
       if possible_regex then
         kws[kw] = possible_regex
       else
-        kws[kw] = string.format([[%s%s%s]], boundary1, kw, boundary2) -- add in vimgrep word boundary char `<`
+        kws[kw] = string.format([[%s%s:%s]], boundary1, kw, boundary2) -- add in vimgrep word boundary char `<`
       end
     end
     table.sort(kws, function(a, b)
@@ -145,10 +146,10 @@ function M._setup()
   patterns = type(patterns) == "table" and patterns or { patterns }
 
   for kw, regex in pairs(tags(nil, "<", ">")) do
-  -- for kw, regex in pairs(tags(nil)) do
+    -- for kw, regex in pairs(tags(nil)) do
     for _, p in pairs(patterns) do
-    p = p:gsub("KEYWORDS", regex)
-    M.hl_regex[kw] = p
+      p = p:gsub("KEYWORDS", regex)
+      M.hl_regex[kw] = p
     end
   end
   M.colors()
