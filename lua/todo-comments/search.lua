@@ -67,7 +67,9 @@ function M.search(cb, opts)
   end
 
   if not command_exists and fallback_exists and fallback_command then
-    Util.warn(command .. " was not found on your path, using " .. fallback_command .. " instead.")
+    if Config.options.fallback_search.disable_warning ~= true then
+      Util.warn(command .. " was not found on your path, using " .. fallback_command .. " instead.")
+    end
     command = fallback_command
     search_args = Config.options.fallback_search.args
     search_pattern = Config.options.fallback_search.pattern

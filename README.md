@@ -141,6 +141,7 @@ Todo comes with the following defaults:
       "--extended-regexp",
     },
     search_pattern = ".*(KEYWORDS):",
+    disable_warning = false,
   },
 }
 

@@ -91,6 +91,7 @@ local defaults = {
       "--extended-regexp",
     },
     pattern = ".*(KEYWORDS):",
+    disable_warning = false,
   },
 }
 
