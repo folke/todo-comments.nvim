@@ -128,6 +128,20 @@ Todo comes with the following defaults:
     pattern = [[\b(KEYWORDS):]], -- ripgrep regex
     -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
   },
+  fallback_search = {
+    command = "grep",
+    search_args = {
+      "--recursive",
+      "--color=never",
+      "--with-filename",
+      "--line-number",
+      "--binary-files=without-match",
+      "--byte-offset",
+      "--exclude-dir='.*'",
+      "--extended-regexp",
+    },
+    search_pattern = ".*(KEYWORDS):",
+  },
 }
 
 ```

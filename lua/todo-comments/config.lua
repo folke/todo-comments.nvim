@@ -78,6 +78,20 @@ local defaults = {
     pattern = [[\b(KEYWORDS):]], -- ripgrep regex
     -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
   },
+  fallback_search = {
+    command = "grep",
+    args = {
+      "--recursive",
+      "--color=never",
+      "--with-filename",
+      "--line-number",
+      "--binary-files=without-match",
+      "--byte-offset",
+      "--exclude-dir='.*'",
+      "--extended-regexp",
+    },
+    pattern = ".*(KEYWORDS):",
+  },
 }
 
 M._options = nil
@@ -119,8 +133,8 @@ function M._setup()
     return table.concat(kws, "|")
   end
 
-  function M.search_regex(keywords)
-    return M.options.search.pattern:gsub("KEYWORDS", tags(keywords))
+  function M.search_regex(keywords, pattern)
+    return pattern:gsub("KEYWORDS", tags(keywords))
   end
 
   M.hl_regex = {}

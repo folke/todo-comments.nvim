@@ -53,10 +53,24 @@ function M.search(cb, opts)
   end
 
   local command = Config.options.search.command
+  local fallback_command = Config.options.fallback_search.command
 
-  if vim.fn.executable(command) ~= 1 then
-    Util.error(command .. " was not found on your path")
+  local search_args = Config.options.search.args
+  local search_pattern = Config.options.search.pattern
+
+  local command_exists = vim.fn.executable(command) == 1
+  local fallback_exists = vim.fn.executable(fallback_command) == 1
+
+  if not command_exists and not fallback_exists then
+    Util.error(command .. " and " .. fallback_command .. " were not found on your path")
     return
+  end
+
+  if not command_exists and fallback_exists and fallback_command then
+    Util.warn(command .. " was not found on your path, using " .. fallback_command .. " instead.")
+    command = fallback_command
+    search_args = Config.options.fallback_search.args
+    search_pattern = Config.options.fallback_search.pattern
   end
 
   local ok, Job = pcall(require, "plenary.job")
@@ -66,24 +80,22 @@ function M.search(cb, opts)
   end
 
   local args =
-    vim.tbl_flatten({ Config.options.search.args, Config.search_regex(keywords_filter(opts.keywords)), opts.cwd })
-  Job
-    :new({
-      command = command,
-      args = args,
-      on_exit = vim.schedule_wrap(function(j, code)
-        if code == 2 then
-          local error = table.concat(j:stderr_result(), "\n")
-          Util.error(command .. " failed with code " .. code .. "\n" .. error)
-        end
-        if code == 1 and opts.disable_not_found_warnings ~= true then
-          Util.warn("no todos found")
-        end
-        local lines = j:result()
-        cb(M.process(lines))
-      end),
-    })
-    :start()
+    vim.tbl_flatten({ search_args, Config.search_regex(keywords_filter(opts.keywords), search_pattern), opts.cwd })
+  Job:new({
+    command = command,
+    args = args,
+    on_exit = vim.schedule_wrap(function(j, code)
+      if code == 2 then
+        local error = table.concat(j:stderr_result(), "\n")
+        Util.error(command .. " failed with code " .. code .. "\n" .. error)
+      end
+      if code == 1 and opts.disable_not_found_warnings ~= true then
+        Util.warn("no todos found")
+      end
+      local lines = j:result()
+      cb(M.process(lines))
+    end),
+  }):start()
 end
 
 local function parse_opts(opts)
