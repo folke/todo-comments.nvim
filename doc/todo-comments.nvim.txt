@@ -1,14 +1,14 @@
-*todo-comments.nvim.txt*    For Neovim >= 0.8.0   Last change: 2023 January 23
+*todo-comments.nvim.txt*     For Neovim >= 0.8.0    Last change: 2023 March 12
 
 ==============================================================================
 Table of Contents                       *todo-comments.nvim-table-of-contents*
 
 1. Todo Comments                            |todo-comments.nvim-todo-comments|
-  - Features                                     |todo-comments.nvim-features|
-  - Requirements                             |todo-comments.nvim-requirements|
-  - Installation                             |todo-comments.nvim-installation|
-  - Configuration                           |todo-comments.nvim-configuration|
-  - Usage                                           |todo-comments.nvim-usage|
+  - Features                       |todo-comments.nvim-todo-comments-features|
+  - Requirements               |todo-comments.nvim-todo-comments-requirements|
+  - Installation               |todo-comments.nvim-todo-comments-installation|
+  - Configuration             |todo-comments.nvim-todo-comments-configuration|
+  - Usage                             |todo-comments.nvim-todo-comments-usage|
 
 ==============================================================================
 1. Todo Comments                            *todo-comments.nvim-todo-comments*
@@ -16,12 +16,8 @@ Table of Contents                       *todo-comments.nvim-table-of-contents*
 **todo-comments** is a lua plugin for Neovim 0.5 to highlight and search for
 todo comments like `TODO`, `HACK`, `BUG` in your code base.
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/292349/118135272-ad21e980-b3b7-11eb-881c-e45a4a3d6192.png" title="fig:"/>
-<p class="caption">image</p>
-</div>
 
-FEATURES                                         *todo-comments.nvim-features*
+FEATURES                           *todo-comments.nvim-todo-comments-features*
 
 
 - **highlight** your todo comments in different styles
@@ -32,7 +28,7 @@ FEATURES                                         *todo-comments.nvim-features*
 - search todos with Telescope <https://github.com/nvim-telescope/telescope.nvim>
 
 
-REQUIREMENTS                                 *todo-comments.nvim-requirements*
+REQUIREMENTS                   *todo-comments.nvim-todo-comments-requirements*
 
 
 - Neovim >= 0.8.0 (use the `neovim-pre-0.8.0` branch for older versions)
@@ -43,11 +39,12 @@ REQUIREMENTS                                 *todo-comments.nvim-requirements*
     - Telescope <https://github.com/nvim-telescope/telescope.nvim>
 
 
-INSTALLATION                                 *todo-comments.nvim-installation*
+INSTALLATION                   *todo-comments.nvim-todo-comments-installation*
 
 Install the plugin with your preferred package manager:
 
-PACKER <HTTPS://GITHUB.COM/WBTHOMASON/PACKER.NVIM> ~
+
+PACKER ~
 
 >lua
     -- Lua
@@ -65,7 +62,7 @@ PACKER <HTTPS://GITHUB.COM/WBTHOMASON/PACKER.NVIM> ~
 <
 
 
-VIM-PLUG <HTTPS://GITHUB.COM/JUNEGUNN/VIM-PLUG> ~
+VIM-PLUG ~
 
 >vim
     " Vim Script
@@ -82,7 +79,7 @@ VIM-PLUG <HTTPS://GITHUB.COM/JUNEGUNN/VIM-PLUG> ~
 <
 
 
-CONFIGURATION                               *todo-comments.nvim-configuration*
+CONFIGURATION                 *todo-comments.nvim-todo-comments-configuration*
 
 Todo comes with the following defaults:
 
@@ -121,7 +118,7 @@ Todo comes with the following defaults:
         before = "", -- "fg" or "bg" or empty
         keyword = "wide", -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
         after = "fg", -- "fg" or "bg" or empty
-        pattern = [[.<(KEYWORDS)\s:]], -- pattern or table of patterns, used for highlightng (vim regex)
+        pattern = [[.<(KEYWORDS)\s:]], -- pattern or table of patterns, used for highlighting (vim regex)
         comments_only = true, -- uses treesitter to match keywords in comments only
         max_line_len = 400, -- ignore lines longer than this
         exclude = {}, -- list of file types to exclude highlighting
@@ -175,7 +172,7 @@ Two methods are available to jump to the next/previous todo comment.
 <
 
 
-USAGE                                               *todo-comments.nvim-usage*
+USAGE                                 *todo-comments.nvim-todo-comments-usage*
 
 **Todo** matches on any text that starts with one of your defined keywords (or
 alt) followed by a colon:
@@ -185,7 +182,6 @@ alt) followed by a colon:
 - FIX: this should be fixed
 - HACK: weird code warning
 
-
 Todos are highlighted in all regular files.
 
 Each of the commands below accept the following arguments:
@@ -193,57 +189,46 @@ Each of the commands below accept the following arguments:
 
 - `cwd` - Specify the directory to search for comments, like:
 
-
 >vim
     :TodoTrouble cwd=~/projects/foobar
 <
 
 
-
 - `keywords` - Comma separated list of keywords to filter results by. Keywords are case-sensitive.
-
 
 >vim
     :TodoTelescope keywords=TODO,FIX
 <
 
 
-`:TODOQUICKFIX` ~
+:TODOQUICKFIX ~
 
 This uses the quickfix list to show all todos in your project.
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/292349/118135332-bf9c2300-b3b7-11eb-9a40-1307feb27c44.png" title="fig:"/>
-<p class="caption">image</p>
-</div>
 
-`:TODOLOCLIST` ~
+:TODOLOCLIST ~
 
 This uses the location list to show all todos in your project.
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/292349/118135332-bf9c2300-b3b7-11eb-9a40-1307feb27c44.png" title="fig:"/>
-<p class="caption">image</p>
-</div>
 
-`:TODOTROUBLE` ~
+:TODOTROUBLE ~
 
 List all project todos in trouble <https://github.com/folke/trouble.nvim>
 
 
   See screenshot at the top
 
-
-`:TODOTELESCOPE` ~
+:TODOTELESCOPE ~
 
 Search through all project todos with Telescope
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/292349/118135371-ccb91200-b3b7-11eb-9002-66af3b683cf0.png" title="fig:"/>
-<p class="caption">image</p>
-</div>
+==============================================================================
+2. Links                                            *todo-comments.nvim-links*
 
-
+1. *image*: https://user-images.githubusercontent.com/292349/118135272-ad21e980-b3b7-11eb-881c-e45a4a3d6192.png
+2. *image*: https://user-images.githubusercontent.com/292349/118135332-bf9c2300-b3b7-11eb-9a40-1307feb27c44.png
+3. *image*: https://user-images.githubusercontent.com/292349/118135332-bf9c2300-b3b7-11eb-9a40-1307feb27c44.png
+4. *image*: https://user-images.githubusercontent.com/292349/118135371-ccb91200-b3b7-11eb-9002-66af3b683cf0.png
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
