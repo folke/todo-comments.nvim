@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/folke/todo-comments.nvim/compare/v1.0.0...v1.0.1) (2023-03-26)
+
+
+### Bug Fixes
+
+* **icons:** fixed obsolete nerd font icons with nerdfix ([3bddf1d](https://github.com/folke/todo-comments.nvim/commit/3bddf1dc406b9212c881882c8cfc4798ee271762))
+
 ## 1.0.0 (2023-01-04)
 
 
