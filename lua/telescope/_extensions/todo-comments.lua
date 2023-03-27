@@ -64,4 +64,4 @@ local function todo(opts)
   pickers.grep_string(opts)
 end
 
-return telescope.register_extension({ exports = { todo = todo } })
+return telescope.register_extension({ exports = { ["todo-comments"] = todo, todo = todo } })
