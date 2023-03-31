@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/folke/todo-comments.nvim/compare/v1.0.1...v1.1.0) (2023-03-31)
+
+
+### Features
+
+* **telescope:** access pickers with plugin_name... ([#191](https://github.com/folke/todo-comments.nvim/issues/191)) ([7420337](https://github.com/folke/todo-comments.nvim/commit/7420337c20d766e73eb83b5d17b4ef50331ed4cd))
+
 ## [1.0.1](https://github.com/folke/todo-comments.nvim/compare/v1.0.0...v1.0.1) (2023-03-26)
 
 
