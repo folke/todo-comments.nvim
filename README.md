@@ -103,6 +103,7 @@ Todo comes with the following defaults:
     comments_only = true, -- uses treesitter to match keywords in comments only
     max_line_len = 400, -- ignore lines longer than this
     exclude = {}, -- list of file types to exclude highlighting
+    colon_in_wide = false, -- when true, the colon is only highlighted with "keyword", otherwise both "keyword" and "after". Only matters when keyword is "wide(_bg)" and after is "fg" or "wide_fg" and "bg", respectively
   },
   -- list of named colors where we try to extract the guifg from the
   -- list of highlight groups or use the hex color if hl not found as a fallback

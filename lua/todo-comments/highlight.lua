@@ -230,6 +230,10 @@ function M.highlight(buf, first, last, _event)
         end
       end
 
+      if not hl.colon_in_wide then
+        afteroffset = 0
+      end
+
       -- after highlights
       if hl.after == "fg" then
         add_highlight(buf, Config.ns, hl_fg, lnum, finish+afteroffset, #line)
