@@ -27,37 +27,18 @@
 
 Install the plugin with your preferred package manager:
 
-### [packer](https://github.com/wbthomason/packer.nvim)
+### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
--- Lua
-use {
+{
   "folke/todo-comments.nvim",
-  requires = "nvim-lua/plenary.nvim",
-  config = function()
-    require("todo-comments").setup {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
-  end
-}
-```
-
-### [vim-plug](https://github.com/junegunn/vim-plug)
-
-```vim
-" Vim Script
-Plug 'nvim-lua/plenary.nvim'
-Plug 'folke/todo-comments.nvim'
-
-lua << EOF
-  require("todo-comments").setup {
+  dependencies = { "nvim-lua/plenary.nvim" },
+  opts = {
     -- your configuration comes here
     -- or leave it empty to use the default settings
     -- refer to the configuration section below
   }
-EOF
+}
 ```
 
 ## ⚙️ Configuration
