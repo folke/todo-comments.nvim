@@ -1,4 +1,4 @@
-*todo-comments.nvim.txt*     For Neovim >= 0.8.0    Last change: 2023 March 31
+*todo-comments.nvim.txt*      For Neovim >= 0.8.0     Last change: 2023 May 22
 
 ==============================================================================
 Table of Contents                       *todo-comments.nvim-table-of-contents*
@@ -19,7 +19,6 @@ todo comments like `TODO`, `HACK`, `BUG` in your code base.
 
 FEATURES                           *todo-comments.nvim-todo-comments-features*
 
-
 - **highlight** your todo comments in different styles
 - optionally only highlights todos in comments using **TreeSitter**
 - configurable **signs**
@@ -29,7 +28,6 @@ FEATURES                           *todo-comments.nvim-todo-comments-features*
 
 
 REQUIREMENTS                   *todo-comments.nvim-todo-comments-requirements*
-
 
 - Neovim >= 0.8.0 (use the `neovim-pre-0.8.0` branch for older versions)
 - a patched font <https://www.nerdfonts.com/> for the icons, or change them to simple ASCII characters
@@ -44,38 +42,18 @@ INSTALLATION                   *todo-comments.nvim-todo-comments-installation*
 Install the plugin with your preferred package manager:
 
 
-PACKER ~
+LAZY.NVIM ~
 
 >lua
-    -- Lua
-    use {
+    {
       "folke/todo-comments.nvim",
-      requires = "nvim-lua/plenary.nvim",
-      config = function()
-        require("todo-comments").setup {
-          -- your configuration comes here
-          -- or leave it empty to use the default settings
-          -- refer to the configuration section below
-        }
-      end
-    }
-<
-
-
-VIM-PLUG ~
-
->vim
-    " Vim Script
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'folke/todo-comments.nvim'
-    
-    lua << EOF
-      require("todo-comments").setup {
+      dependencies = { "nvim-lua/plenary.nvim" },
+      opts = {
         -- your configuration comes here
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
       }
-    EOF
+    }
 <
 
 
@@ -177,7 +155,6 @@ USAGE                                 *todo-comments.nvim-todo-comments-usage*
 **Todo** matches on any text that starts with one of your defined keywords (or
 alt) followed by a colon:
 
-
 - TODO: do something
 - FIX: this should be fixed
 - HACK: weird code warning
@@ -186,13 +163,11 @@ Todos are highlighted in all regular files.
 
 Each of the commands below accept the following arguments:
 
-
 - `cwd` - Specify the directory to search for comments, like:
 
 >vim
     :TodoTrouble cwd=~/projects/foobar
 <
-
 
 - `keywords` - Comma separated list of keywords to filter results by. Keywords are case-sensitive.
 
