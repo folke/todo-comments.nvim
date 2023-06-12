@@ -152,6 +152,12 @@ Each of the commands below accept the following arguments:
 :TodoTrouble cwd=~/projects/foobar
 ```
 
+You can also leverage this option to search only in the current file, like:
+
+```vim
+:execute 'TodoTrouble cwd='.getreg('%')
+```
+
 - `keywords` - Comma separated list of keywords to filter results by. Keywords are case-sensitive.
 
 ```vim
