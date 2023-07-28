@@ -1,6 +1,6 @@
 # ✅ Todo Comments
 
-**todo-comments** is a lua plugin for Neovim 0.5 to highlight and search for todo comments like
+**todo-comments** is a lua plugin for Neovim >= 0.8.0 to highlight and search for todo comments like
 `TODO`, `HACK`, `BUG` in your code base.
 
 ![image](https://user-images.githubusercontent.com/292349/118135272-ad21e980-b3b7-11eb-881c-e45a4a3d6192.png)
