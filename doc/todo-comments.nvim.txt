@@ -1,4 +1,4 @@
-*todo-comments.nvim.txt*      For Neovim >= 0.8.0     Last change: 2023 May 22
+*todo-comments.nvim.txt*     For Neovim >= 0.8.0     Last change: 2023 July 28
 
 ==============================================================================
 Table of Contents                       *todo-comments.nvim-table-of-contents*
@@ -13,8 +13,8 @@ Table of Contents                       *todo-comments.nvim-table-of-contents*
 ==============================================================================
 1. Todo Comments                            *todo-comments.nvim-todo-comments*
 
-**todo-comments** is a lua plugin for Neovim 0.5 to highlight and search for
-todo comments like `TODO`, `HACK`, `BUG` in your code base.
+**todo-comments** is a lua plugin for Neovim >= 0.8.0 to highlight and search
+for todo comments like `TODO`, `HACK`, `BUG` in your code base.
 
 
 FEATURES                           *todo-comments.nvim-todo-comments-features*
