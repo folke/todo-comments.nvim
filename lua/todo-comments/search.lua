@@ -106,7 +106,7 @@ end
 
 function M.setlist(opts, use_loclist)
   opts = parse_opts(opts) or {}
-  opts.open = (opts.open ~= nil) and opts.open or true
+  opts.open = (opts.open ~= nil and {opts.open} or {true})[1]
   M.search(function(results)
     if use_loclist then
       vim.fn.setloclist(0, {}, " ", { title = "Todo", id = "$", items = results })
