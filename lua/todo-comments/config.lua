@@ -4,6 +4,7 @@ local Util = require("todo-comments.util")
 local M = {}
 
 M.keywords = {}
+M.keyword_regex = {}
 --- @type TodoOptions
 M.options = {}
 M.loaded = false
@@ -106,29 +107,50 @@ function M._setup()
 
   for kw, opts in pairs(M.options.keywords) do
     M.keywords[kw] = kw
-    for _, alt in pairs(opts.alt or {}) do
-      M.keywords[alt] = kw
+    for idx, alt in pairs(opts.alt or {}) do
+      if type(idx) == "number" then
+        M.keywords[alt] = kw
+      else
+        M.keywords[idx] = kw
+        M.keyword_regex[idx] = alt
+      end
     end
   end
 
-  local function tags(keywords)
-    local kws = keywords or vim.tbl_keys(M.keywords)
+  local function tags(keywords, boundary1, boundary2)
+    boundary1 = boundary1 or ""
+    boundary2 = boundary2 or ""
+    local kws_input = keywords or vim.tbl_keys(M.keywords)
+    local kws = {}
+    for _, kw in pairs(kws_input or {}) do
+      local possible_regex = M.keyword_regex[kw]
+      if possible_regex then
+        kws[kw] = possible_regex
+      else
+        kws[kw] = string.format([[%s%s:%s]], boundary1, kw, boundary2) -- add in vimgrep word boundary char `<`
+      end
+    end
     table.sort(kws, function(a, b)
       return #b < #a
     end)
-    return table.concat(kws, "|")
+    return kws
   end
 
   function M.search_regex(keywords)
-    return M.options.search.pattern:gsub("KEYWORDS", tags(keywords))
+    local kws = vim.tbl_values(tags(keywords, "\\b", "\\b"))
+    return M.options.search.pattern:gsub("KEYWORDS", table.concat(kws, "|"))
   end
 
   M.hl_regex = {}
   local patterns = M.options.highlight.pattern
   patterns = type(patterns) == "table" and patterns or { patterns }
-  for _, p in pairs(patterns) do
-    p = p:gsub("KEYWORDS", tags())
-    table.insert(M.hl_regex, p)
+
+  for kw, regex in pairs(tags(nil, "<", ">")) do
+    -- for kw, regex in pairs(tags(nil)) do
+    for _, p in pairs(patterns) do
+      p = p:gsub("KEYWORDS", regex)
+      M.hl_regex[kw] = p
+    end
   end
   M.colors()
   M.signs()
