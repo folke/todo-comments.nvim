@@ -1,4 +1,4 @@
-*todo-comments.nvim.txt*     For Neovim >= 0.8.0    Last change: 2024 March 27
+*todo-comments.nvim.txt*      For Neovim >= 0.8.0     Last change: 2024 May 22
 
 ==============================================================================
 Table of Contents                       *todo-comments.nvim-table-of-contents*
@@ -9,6 +9,7 @@ Table of Contents                       *todo-comments.nvim-table-of-contents*
   - Installation               |todo-comments.nvim-todo-comments-installation|
   - Configuration             |todo-comments.nvim-todo-comments-configuration|
   - Usage                             |todo-comments.nvim-todo-comments-usage|
+2. Links                                            |todo-comments.nvim-links|
 
 ==============================================================================
 1. Todo Comments                            *todo-comments.nvim-todo-comments*
