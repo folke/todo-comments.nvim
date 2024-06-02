@@ -19,9 +19,9 @@
 - Neovim >= 0.8.0 (use the `neovim-pre-0.8.0` branch for older versions)
 - a [patched font](https://www.nerdfonts.com/) for the icons, or change them to simple ASCII characters
 - optional:
-  - [ripgrep](https://github.com/BurntSushi/ripgrep) and [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) are used for searching.
-  - [Trouble](https://github.com/folke/trouble.nvim)
-  - [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+  + [ripgrep](https://github.com/BurntSushi/ripgrep) and [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) are used for searching.
+  + [Trouble](https://github.com/folke/trouble.nvim)
+  + [Telescope](https://github.com/nvim-telescope/telescope.nvim)
 
 ## 📦 Installation
 
@@ -149,7 +149,7 @@ Each of the commands below accept the following arguments:
 - `cwd` - Specify the directory to search for comments, like:
 
 ```vim
-:TodoTrouble cwd=~/projects/foobar
+:TodoTelescope cwd=~/projects/foobar
 ```
 
 - `keywords` - Comma separated list of keywords to filter results by. Keywords are case-sensitive.
@@ -170,9 +170,11 @@ This uses the location list to show all todos in your project.
 
 ![image](https://user-images.githubusercontent.com/292349/118135332-bf9c2300-b3b7-11eb-9a40-1307feb27c44.png)
 
-### 🚦 `:TodoTrouble`
+### 🚦 `:Trouble todo`
 
 List all project todos in [trouble](https://github.com/folke/trouble.nvim)
+
+Use Trouble's filtering: `Trouble todo filter = {tag = {TODO,FIX,FIXME}}`
 
 > See screenshot at the top
 
