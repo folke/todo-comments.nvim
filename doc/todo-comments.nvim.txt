@@ -1,4 +1,4 @@
-*todo-comments.nvim.txt*      For Neovim >= 0.8.0     Last change: 2024 May 22
+*todo-comments.nvim.txt*     For Neovim >= 0.8.0     Last change: 2024 June 02
 
 ==============================================================================
 Table of Contents                       *todo-comments.nvim-table-of-contents*
@@ -167,7 +167,7 @@ Each of the commands below accept the following arguments:
 - `cwd` - Specify the directory to search for comments, like:
 
 >vim
-    :TodoTrouble cwd=~/projects/foobar
+    :TodoTelescope cwd=~/projects/foobar
 <
 
 - `keywords` - Comma separated list of keywords to filter results by. Keywords are case-sensitive.
@@ -187,9 +187,11 @@ This uses the quickfix list to show all todos in your project.
 This uses the location list to show all todos in your project.
 
 
-:TODOTROUBLE ~
+:TROUBLE TODO ~
 
 List all project todos in trouble <https://github.com/folke/trouble.nvim>
+
+Use Trouble’s filtering: `Trouble todo filter = {tag = {TODO,FIX,FIXME}}`
 
 
   See screenshot at the top
