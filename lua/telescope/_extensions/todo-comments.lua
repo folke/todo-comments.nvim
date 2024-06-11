@@ -41,7 +41,7 @@ local function todo(opts)
 
       if start then
         kw = Config.keywords[kw] or kw
-        local icon = Config.options.keywords[kw].icon
+        local icon = Config.options.keywords[kw].icon or ' '
         display = icon .. " " .. display
         table.insert(hl, { { 1, #icon + 1 }, "TodoFg" .. kw })
         text = vim.trim(text:sub(start))
