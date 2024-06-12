@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.0](https://github.com/folke/todo-comments.nvim/compare/v1.2.0...v1.3.0) (2024-06-12)
+
+
+### Features
+
+* added support for fzf-lua ([fe5a7c6](https://github.com/folke/todo-comments.nvim/commit/fe5a7c66d77bcb3895acda55b9fa4519110eb154))
+* **fzf:** multiline by default ([8fdea2a](https://github.com/folke/todo-comments.nvim/commit/8fdea2acf78aa16b3881aa801853fa86b02c2fd8))
+
+
+### Bug Fixes
+
+* don't use tbl_flatten. Fixes [#272](https://github.com/folke/todo-comments.nvim/issues/272) ([9c104cf](https://github.com/folke/todo-comments.nvim/commit/9c104cf7868f1c739b43a07e5593666cc9de2d67))
+* **extension:** provide default icon ([#274](https://github.com/folke/todo-comments.nvim/issues/274)) ([7de4e85](https://github.com/folke/todo-comments.nvim/commit/7de4e85211e3301572393f4b4957bff463f188fc)), closes [#202](https://github.com/folke/todo-comments.nvim/issues/202)
+* ternary evaluation in setlist for opts.open ([#252](https://github.com/folke/todo-comments.nvim/issues/252)) ([c7a6a02](https://github.com/folke/todo-comments.nvim/commit/c7a6a02823ca4cbecfee3c2a32d8674573308014))
+
 ## [1.2.0](https://github.com/folke/todo-comments.nvim/compare/v1.1.0...v1.2.0) (2024-03-27)
 
 
