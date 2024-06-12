@@ -17,9 +17,10 @@ end
 
 ---@param opts? {keywords: string[]}
 function M.todo(opts)
-  if not opts then
-    opts = {}
-  end
+  opts = vim.tbl_extend("force", {
+    no_esc = true,
+    multiline = true,
+  }, opts or {})
   opts.no_esc = true
   opts.search = Config.search_regex(keywords_filter(opts.keywords))
   return Grep.grep(opts)
