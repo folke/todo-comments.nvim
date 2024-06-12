@@ -33,6 +33,7 @@ local defaults = {
   gui_style = {
     fg = "NONE", -- The gui style to use for the fg highlight group.
     bg = "BOLD", -- The gui style to use for the bg highlight group.
+    sign = "NONE", -- The gui style to use for the sign highlight group.
   },
   merge_keywords = true, -- when true, custom keywords will be merged with the defaults
   -- highlighting of the line containing the todo comment
@@ -153,6 +154,7 @@ function M.colors()
   fg_light = fg_light or "#ffffff"
   local fg_gui = M.options.gui_style.fg
   local bg_gui = M.options.gui_style.bg
+  local sign_gui = M.options.gui_style.sign
 
   local sign_hl = Util.get_hl("SignColumn")
   local sign_bg = (sign_hl and sign_hl.background) and sign_hl.background or "NONE"
@@ -186,7 +188,7 @@ function M.colors()
 
     vim.cmd("hi def TodoBg" .. kw .. " guibg=" .. hex .. " guifg=" .. fg .. " gui=" .. bg_gui)
     vim.cmd("hi def TodoFg" .. kw .. " guibg=NONE guifg=" .. hex .. " gui=" .. fg_gui)
-    vim.cmd("hi def TodoSign" .. kw .. " guibg=" .. sign_bg .. " guifg=" .. hex .. " gui=NONE")
+    vim.cmd("hi def TodoSign" .. kw .. " guibg=" .. sign_bg .. " guifg=" .. hex .. " gui=" .. sign_gui )
   end
 end
 
