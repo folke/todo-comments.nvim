@@ -53,6 +53,7 @@ local defaults = {
     max_line_len = 400, -- ignore lines longer than this
     exclude = {}, -- list of file types to exclude highlighting
     throttle = 200,
+    colon_in_wide = false, -- when true, the colon is only highlighted with "keyword", otherwise both "keyword" and "after"
   },
   -- list of named colors where we try to extract the guifg from the
   -- list of hilight groups or use the hex color if hl not found as a fallback
