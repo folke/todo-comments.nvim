@@ -86,7 +86,9 @@ local function add_highlight(buffer, ns, hl, line, from, to)
   --   hl_group = hl,
   --   priority = 500,
   -- })
-  vim.api.nvim_buf_add_highlight(buffer, ns, hl, line, from, to)
+  if Config.options.highlight.override then
+      vim.api.nvim_buf_add_highlight(buffer, ns, hl, line, from, to)
+  end
 end
 
 function M.get_state(buf)
