@@ -109,6 +109,8 @@ Todo comes with the following defaults:
     pattern = [[\b(KEYWORDS):]], -- ripgrep regex
     -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
   },
+  -- whether to wrap to the start (or end) of the file when jumping
+  wrap = false,
 }
 
 ```
@@ -131,6 +133,18 @@ end, { desc = "Previous todo comment" })
 vim.keymap.set("n", "]t", function()
   require("todo-comments").jump_next({keywords = { "ERROR", "WARNING" }})
 end, { desc = "Next error/warning todo comment" })
+
+-- You can jump circularly
+
+vim.keymap.set("n", "]t", function()
+  require("todo-comments").jump_next({wrap = true})
+end, { desc = "Next todo comment" })
+
+-- You can jump to the last todo comment
+
+vim.keymap.set("n", "]T", function()
+  require("todo-comments").jump_next({last = true})
+end, { desc = "Last todo comment" })
 
 ```
 
