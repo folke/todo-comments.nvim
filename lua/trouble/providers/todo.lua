@@ -1,6 +1,6 @@
+local Config = require("todo-comments.config")
 local Search = require("todo-comments.search")
 local util = require("trouble.util")
-local Config = require("todo-comments.config")
 
 local function todo(_win, _buf, cb, opts)
   Search.search(function(results)
