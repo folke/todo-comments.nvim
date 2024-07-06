@@ -46,10 +46,9 @@ function M.match(str, patterns)
   for _, pattern in pairs(patterns) do
     local m = vim.fn.matchlist(str, [[\v\C]] .. pattern)
     if #m > 1 and m[2] then
-      local matched = m[1]
-      local kw_only = m[2]
-      local start = str:find(matched, 1, true)
-      return start, start + #matched - 1, kw_only
+      local kw = m[2]
+      local start = str:find(kw)
+      return start, start + #kw, kw
     end
   end
 end
