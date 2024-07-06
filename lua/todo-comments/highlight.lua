@@ -49,7 +49,7 @@ function M.match(str, patterns)
       local matched = m[1]
       local kw_only = m[2]
       local start = str:find(matched, 1, true)
-      return start, start + #matched, kw_only
+      return start, start + #matched - 1, kw_only
     end
   end
 end
