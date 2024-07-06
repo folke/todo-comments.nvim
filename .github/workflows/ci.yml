@@ -12,4 +12,3 @@ jobs:
     with:
       plugin: todo-comments.nvim
       repo: folke/todo-comments.nvim
-      tests: false
