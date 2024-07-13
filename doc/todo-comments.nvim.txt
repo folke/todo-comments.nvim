@@ -1,4 +1,4 @@
-*todo-comments.nvim.txt*          For Neovim         Last change: 2024 July 07
+*todo-comments.nvim.txt*          For Neovim         Last change: 2024 July 13
 
 ==============================================================================
 Table of Contents                       *todo-comments.nvim-table-of-contents*
