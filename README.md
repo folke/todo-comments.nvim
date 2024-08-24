@@ -12,7 +12,7 @@
 - configurable **signs**
 - open todos in a **quickfix** list
 - open todos in [Trouble](https://github.com/folke/trouble.nvim)
-- search todos with [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+- search todos with [Telescope](https://github.com/nvim-telescope/telescope.nvim) & [FzfLua](https://github.com/ibhagwan/fzf-lua)
 
 ## ⚡️ Requirements
 
@@ -22,6 +22,7 @@
   + [ripgrep](https://github.com/BurntSushi/ripgrep) and [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) are used for searching.
   + [Trouble](https://github.com/folke/trouble.nvim)
   + [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+  + [FzfLua](https://github.com/ibhagwan/fzf-lua)
 
 ## 📦 Installation
 
@@ -183,6 +184,9 @@ Use Trouble's filtering: `Trouble todo filter = {tag = {TODO,FIX,FIXME}}`
 Search through all project todos with Telescope
 
 ![image](https://user-images.githubusercontent.com/292349/118135371-ccb91200-b3b7-11eb-9002-66af3b683cf0.png)
+
+> [!Note]
+> The same can be done with `:TodoFzfLua`
 
 <!-- markdownlint-disable-file MD033 -->
 <!-- markdownlint-configure-file { "MD013": { "line_length": 120 } } -->
