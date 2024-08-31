@@ -1,4 +1,4 @@
-*todo-comments.nvim.txt*          For Neovim         Last change: 2024 July 22
+*todo-comments.nvim.txt*         For Neovim        Last change: 2024 August 31
 
 ==============================================================================
 Table of Contents                       *todo-comments.nvim-table-of-contents*
@@ -25,7 +25,7 @@ FEATURES                           *todo-comments.nvim-todo-comments-features*
 - configurable **signs**
 - open todos in a **quickfix** list
 - open todos in Trouble <https://github.com/folke/trouble.nvim>
-- search todos with Telescope <https://github.com/nvim-telescope/telescope.nvim>
+- search todos with Telescope <https://github.com/nvim-telescope/telescope.nvim> & FzfLua <https://github.com/ibhagwan/fzf-lua>
 
 
 REQUIREMENTS                   *todo-comments.nvim-todo-comments-requirements*
@@ -36,6 +36,7 @@ REQUIREMENTS                   *todo-comments.nvim-todo-comments-requirements*
     - ripgrep <https://github.com/BurntSushi/ripgrep> and plenary.nvim <https://github.com/nvim-lua/plenary.nvim> are used for searching.
     - Trouble <https://github.com/folke/trouble.nvim>
     - Telescope <https://github.com/nvim-telescope/telescope.nvim>
+    - FzfLua <https://github.com/ibhagwan/fzf-lua>
 
 
 INSTALLATION                   *todo-comments.nvim-todo-comments-installation*
@@ -200,6 +201,8 @@ Use Trouble’s filtering: `Trouble todo filter = {tag = {TODO,FIX,FIXME}}`
 
 Search through all project todos with Telescope
 
+
+  [!Note] The same can be done with `:TodoFzfLua`
 ==============================================================================
 2. Links                                            *todo-comments.nvim-links*
 
