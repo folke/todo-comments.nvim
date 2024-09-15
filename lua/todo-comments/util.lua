@@ -29,6 +29,15 @@ function M.is_dark(hex)
   return lum <= 0.5
 end
 
+function M.color_distance(r1, g1, b1, r2, g2, b2)
+  return math.sqrt((r1 - r2) ^ 2 + (g1 - g2) ^ 2 + (b1 - b2) ^ 2)
+end
+
+function M.select_fg(base, fg1, fg2)
+  local r, g, b = M.hex2rgb(base)
+  return M.color_distance(r, g, b, M.hex2rgb(fg1)) > M.color_distance(r, g, b, M.hex2rgb(fg2)) and fg1 or fg2
+end
+
 function M.warn(msg)
   vim.notify(msg, vim.log.levels.WARN, { title = "TodoComments" })
 end

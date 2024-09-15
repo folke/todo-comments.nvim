@@ -182,7 +182,7 @@ function M.colors()
     if not hex then
       error("Todo: no color for " .. kw)
     end
-    local fg = Util.is_dark(hex) and fg_light or fg_dark
+    local fg = Util.select_fg(hex, fg_light, fg_dark)
 
     vim.cmd("hi def TodoBg" .. kw .. " guibg=" .. hex .. " guifg=" .. fg .. " gui=" .. bg_gui)
     vim.cmd("hi def TodoFg" .. kw .. " guibg=NONE guifg=" .. hex .. " gui=" .. fg_gui)
