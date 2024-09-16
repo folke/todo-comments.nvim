@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/folke/todo-comments.nvim/compare/v1.3.0...v1.4.0) (2024-09-16)
+
+
+### Features
+
+* **fzf:** add fzf-lua support in Readme & add TodoFzfLua command ([#312](https://github.com/folke/todo-comments.nvim/issues/312)) ([6d6cf47](https://github.com/folke/todo-comments.nvim/commit/6d6cf47b06638bd037c7b6f87fd284d4066d8a51))
+
+
+### Bug Fixes
+
+* **config:** select `fg` by maximizing contrast rather than check if a color is dark ([#316](https://github.com/folke/todo-comments.nvim/issues/316)) ([76990a9](https://github.com/folke/todo-comments.nvim/commit/76990a9c04083068e132e4d0c9d13ef7e4635a9e))
+
 ## [1.3.0](https://github.com/folke/todo-comments.nvim/compare/v1.2.0...v1.3.0) (2024-07-07)
 
 
