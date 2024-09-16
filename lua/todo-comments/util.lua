@@ -23,17 +23,11 @@ function M.rgb2hex(r, g, b)
   return string.format("#%02x%02x%02x", r, g, b)
 end
 
-function M.is_dark(hex)
-  local r, g, b = M.hex2rgb(hex)
-  local lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-  return lum <= 0.5
-end
-
 function M.color_distance(r1, g1, b1, r2, g2, b2)
   return math.sqrt((r1 - r2) ^ 2 + (g1 - g2) ^ 2 + (b1 - b2) ^ 2)
 end
 
-function M.select_fg(base, fg1, fg2)
+function M.maximize_contrast(base, fg1, fg2)
   local r, g, b = M.hex2rgb(base)
   return M.color_distance(r, g, b, M.hex2rgb(fg1)) > M.color_distance(r, g, b, M.hex2rgb(fg2)) and fg1 or fg2
 end
