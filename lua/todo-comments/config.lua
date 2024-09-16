@@ -147,10 +147,18 @@ end
 
 function M.colors()
   local normal = Util.get_hl("Normal")
-  local fg_dark = Util.is_dark(normal.foreground or "#ffffff") and normal.foreground or normal.background
-  local fg_light = Util.is_dark(normal.foreground or "#ffffff") and normal.background or normal.foreground
-  fg_dark = fg_dark or "#000000"
-  fg_light = fg_light or "#ffffff"
+  local normal_fg = normal.foreground
+  local normal_bg = normal.background
+  local default_dark = "#000000"
+  local default_light = "#FFFFFF"
+  if not normal_fg and not normal_bg then
+    normal_fg = default_light
+    normal_bg = default_dark
+  elseif not normal_fg then
+    normal_fg = Util.maximize_contrast(normal_bg, default_dark, default_light)
+  elseif not normal_bg then
+    normal_bg = Util.maximize_contrast(normal_fg, default_dark, default_light)
+  end
   local fg_gui = M.options.gui_style.fg
   local bg_gui = M.options.gui_style.bg
 
@@ -182,7 +190,7 @@ function M.colors()
     if not hex then
       error("Todo: no color for " .. kw)
     end
-    local fg = Util.is_dark(hex) and fg_light or fg_dark
+    local fg = Util.maximize_contrast(hex, normal_fg, normal_bg)
 
     vim.cmd("hi def TodoBg" .. kw .. " guibg=" .. hex .. " guifg=" .. fg .. " gui=" .. bg_gui)
     vim.cmd("hi def TodoFg" .. kw .. " guibg=NONE guifg=" .. hex .. " gui=" .. fg_gui)
