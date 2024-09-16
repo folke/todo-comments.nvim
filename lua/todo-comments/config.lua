@@ -78,6 +78,8 @@ local defaults = {
     pattern = [[\b(KEYWORDS):]], -- ripgrep regex
     -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
   },
+  -- whether to wrap to the start (or end) of the file when jumping
+  wrap = false,
 }
 
 M._options = nil
