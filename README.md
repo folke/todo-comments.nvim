@@ -105,6 +105,8 @@ Todo comes with the following defaults:
       "--line-number",
       "--column",
     },
+    -- whether to wrap to the start (or end) of the file when searching
+    wrap = false,
     -- regex that will be used to match keywords.
     -- don't replace the (KEYWORDS) placeholder
     pattern = [[\b(KEYWORDS):]], -- ripgrep regex
