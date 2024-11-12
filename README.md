@@ -109,6 +109,7 @@ Todo comes with the following defaults:
     -- don't replace the (KEYWORDS) placeholder
     pattern = [[\b(KEYWORDS):]], -- ripgrep regex
     -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
+    sorted_quickfix = false,
   },
 }
 

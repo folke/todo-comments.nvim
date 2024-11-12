@@ -39,6 +39,13 @@ function M.process(lines)
       end
     end
   end
+
+  if Config.options.search.sorted_quickfix == true then
+    table.sort(results, function(a, b)
+      return a.line <= b.line
+    end)
+  end
+
   return results
 end
 
