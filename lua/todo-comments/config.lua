@@ -64,6 +64,10 @@ local defaults = {
     default = { "Identifier", "#7C3AED" },
     test = { "Identifier", "#FF00FF" },
   },
+  default_fg = {
+    dark = "#000000",
+    light = "#FFFFFF",
+  },
   search = {
     command = "rg",
     args = {
@@ -152,8 +156,8 @@ function M.colors()
   local normal = Util.get_hl("Normal")
   local normal_fg = normal.foreground
   local normal_bg = normal.background
-  local default_dark = "#000000"
-  local default_light = "#FFFFFF"
+  local default_dark = M.options.default_fg.dark
+  local default_light = M.options.default_fg.light
   if not normal_fg and not normal_bg then
     normal_fg = default_light
     normal_bg = default_dark
