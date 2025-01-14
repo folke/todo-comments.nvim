@@ -67,6 +67,7 @@ function M.is_comment(buf, row, col)
         return true
       end
     end
+    return false
   else
     local win = vim.fn.bufwinid(buf)
     return win ~= -1
