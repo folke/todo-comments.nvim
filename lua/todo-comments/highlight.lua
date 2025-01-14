@@ -170,10 +170,18 @@ function M.highlight(buf, first, last, _event)
     local ok, start, finish, kw = pcall(M.match, line)
     local lnum = first + l - 1
 
+    local ft_overrides = Config.options.highlight.comments_only_ft_override
+    local ft = vim.api.nvim_buf_get_option(buf, "filetype")
+
+    local comments_only = Config.options.highlight.comments_only
+    if ft_overrides ~= nil and ft_overrides[ft] ~= nil then
+      comments_only = ft_overrides[ft]
+    end
+
     if ok and start then
       ---@cast kw string
       if
-        Config.options.highlight.comments_only
+        comments_only
         and not M.is_quickfix(buf)
         and not M.is_comment(buf, lnum, start - 1)
       then
