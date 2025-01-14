@@ -133,7 +133,7 @@ function M._setup()
   M.colors()
   M.signs()
   require("todo-comments.highlight").start()
-  if Snacks then
+  if Snacks and pcall(require, "snacks.picker") then
     Snacks.picker.sources.todo_comments = require("todo-comments.snacks").source
   end
   M.loaded = true
