@@ -3,6 +3,8 @@
 -- dddddd
 local Config = require("todo-comments.config")
 
+---@module 'uv'
+
 local M = {}
 M.enabled = false
 M.bufs = {}
@@ -31,6 +33,7 @@ M.wins = {}
 ---@type table<buffer, {dirty:TodoDirty}>
 M.state = {}
 
+---@return number? start, number? finish, string? kw
 function M.match(str, patterns)
   local max_line_len = Config.options.highlight.max_line_len
 
@@ -109,10 +112,13 @@ function M.redraw(buf, first, last)
   end
 end
 
----@type vim.loop.Timer
+---@type uv.uv_timer_t?
 M.timer = nil
 
 function M.update()
+  if M.timer then
+    M.timer:stop()
+  end
   M.timer = nil
   for buf, state in pairs(M.state) do
     if vim.api.nvim_buf_is_valid(buf) then
