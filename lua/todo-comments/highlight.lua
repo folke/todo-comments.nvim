@@ -208,6 +208,7 @@ function M.highlight(buf, first, last, _event)
     if opts then
       start = start - 1
       finish = finish - 1
+      local afteroffset = 0
 
       local hl_fg = "TodoFg" .. kw
       local hl_bg = "TodoBg" .. kw
@@ -224,8 +225,10 @@ function M.highlight(buf, first, last, _event)
 
         -- tag highlights
         if hl.keyword == "wide" or hl.keyword == "wide_bg" then
+          afteroffset = afteroffset + 1
           add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
         elseif hl.keyword == "wide_fg" then
+          afteroffset = afteroffset + 1
           add_highlight(buf, Config.ns, hl_fg, lnum, math.max(start - 1, 0), finish + 1)
         elseif hl.keyword == "bg" then
           add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
@@ -234,11 +237,15 @@ function M.highlight(buf, first, last, _event)
         end
       end
 
+      if not hl.colon_in_wide then
+        afteroffset = 0
+      end
+
       -- after highlights
       if hl.after == "fg" then
-        add_highlight(buf, Config.ns, hl_fg, lnum, finish, #line)
+        add_highlight(buf, Config.ns, hl_fg, lnum, finish+afteroffset, #line)
       elseif hl.after == "bg" then
-        add_highlight(buf, Config.ns, hl_bg, lnum, finish, #line)
+        add_highlight(buf, Config.ns, hl_bg, lnum, finish+afteroffset, #line)
       end
 
       if not is_multiline then
