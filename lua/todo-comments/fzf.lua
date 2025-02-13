@@ -1,5 +1,5 @@
 local Config = require("todo-comments.config")
-local Grep = require("fzf-lua.providers.grep")
+local grep = require("fzf-lua").grep
 
 local M = {}
 
@@ -23,7 +23,7 @@ function M.todo(opts)
   }, opts or {})
   opts.no_esc = true
   opts.search = Config.search_regex(keywords_filter(opts.keywords))
-  return Grep.grep(opts)
+  return grep(opts)
 end
 
 return M
