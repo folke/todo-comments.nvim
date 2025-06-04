@@ -141,10 +141,7 @@ end
 
 function M.signs()
   for kw, opts in pairs(M.options.keywords) do
-    vim.fn.sign_define("todo-sign-" .. kw, {
-      text = opts.icon,
-      texthl = "TodoSign" .. kw,
-    })
+    vim.cmd("sign define todo-sign-" .. kw .. " text=" .. opts.icon .. " texthl=TodoSign" .. kw)
   end
 end
 
