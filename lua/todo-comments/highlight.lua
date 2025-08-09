@@ -3,6 +3,8 @@
 -- dddddd
 local Config = require("todo-comments.config")
 
+---@module 'uv'
+
 local M = {}
 M.enabled = false
 M.bufs = {}
@@ -31,6 +33,7 @@ M.wins = {}
 ---@type table<buffer, {dirty:TodoDirty}>
 M.state = {}
 
+---@return number? start, number? finish, string? kw
 function M.match(str, patterns)
   local max_line_len = Config.options.highlight.max_line_len
 
@@ -46,9 +49,10 @@ function M.match(str, patterns)
   for _, pattern in pairs(patterns) do
     local m = vim.fn.matchlist(str, [[\v\C]] .. pattern)
     if #m > 1 and m[2] then
-      local kw = m[2]
-      local start = str:find(kw)
-      return start, start + #kw, kw
+      local match = m[2]
+      local kw = m[3] ~= "" and m[3] or m[2]
+      local start = str:find(match, 1, true)
+      return start, start + #match, kw
     end
   end
 end
@@ -108,10 +112,13 @@ function M.redraw(buf, first, last)
   end
 end
 
----@type vim.loop.Timer
+---@type uv.uv_timer_t?
 M.timer = nil
 
 function M.update()
+  if M.timer then
+    M.timer:stop()
+  end
   M.timer = nil
   for buf, state in pairs(M.state) do
     if vim.api.nvim_buf_is_valid(buf) then
@@ -387,7 +394,6 @@ function M.start()
     [[augroup Todo
         autocmd!
         autocmd BufWinEnter,WinNew * lua require("todo-comments.highlight").attach()
-        autocmd BufWritePost * silent! lua require'trouble'.refresh({auto = true, provider = "todo"})
         autocmd WinScrolled * lua require("todo-comments.highlight").highlight_win()
         autocmd ColorScheme * lua vim.defer_fn(require("todo-comments.config").colors, 10)
       augroup end]],

@@ -4,10 +4,10 @@ if not has_telescope then
   error("This plugins requires nvim-telescope/telescope.nvim")
 end
 
-local pickers = require("telescope.builtin")
 local Config = require("todo-comments.config")
 local Highlight = require("todo-comments.highlight")
 local make_entry = require("telescope.make_entry")
+local pickers = require("telescope.builtin")
 
 local function keywords_filter(opts_keywords)
   assert(not opts_keywords or type(opts_keywords) == "string", "'keywords' must be a comma separated string or nil")
@@ -41,9 +41,9 @@ local function todo(opts)
 
       if start then
         kw = Config.keywords[kw] or kw
-        local icon = Config.options.keywords[kw].icon
+        local icon = Config.options.keywords[kw].icon or " "
         display = icon .. " " .. display
-        table.insert(hl, { { 1, #icon + 1 }, "TodoFg" .. kw })
+        table.insert(hl, { { 0, #icon + 1 }, "TodoFg" .. kw })
         text = vim.trim(text:sub(start))
 
         table.insert(hl, {

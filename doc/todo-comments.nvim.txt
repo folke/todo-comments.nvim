@@ -1,4 +1,4 @@
-*todo-comments.nvim.txt*    For Neovim >= 0.8.0   Last change: 2023 October 25
+*todo-comments.nvim.txt*        For Neovim        Last change: 2025 January 14
 
 ==============================================================================
 Table of Contents                       *todo-comments.nvim-table-of-contents*
@@ -9,6 +9,7 @@ Table of Contents                       *todo-comments.nvim-table-of-contents*
   - Installation               |todo-comments.nvim-todo-comments-installation|
   - Configuration             |todo-comments.nvim-todo-comments-configuration|
   - Usage                             |todo-comments.nvim-todo-comments-usage|
+2. Links                                            |todo-comments.nvim-links|
 
 ==============================================================================
 1. Todo Comments                            *todo-comments.nvim-todo-comments*
@@ -24,7 +25,7 @@ FEATURES                           *todo-comments.nvim-todo-comments-features*
 - configurable **signs**
 - open todos in a **quickfix** list
 - open todos in Trouble <https://github.com/folke/trouble.nvim>
-- search todos with Telescope <https://github.com/nvim-telescope/telescope.nvim>
+- search todos with Telescope <https://github.com/nvim-telescope/telescope.nvim> & FzfLua <https://github.com/ibhagwan/fzf-lua>
 
 
 REQUIREMENTS                   *todo-comments.nvim-todo-comments-requirements*
@@ -35,6 +36,7 @@ REQUIREMENTS                   *todo-comments.nvim-todo-comments-requirements*
     - ripgrep <https://github.com/BurntSushi/ripgrep> and plenary.nvim <https://github.com/nvim-lua/plenary.nvim> are used for searching.
     - Trouble <https://github.com/folke/trouble.nvim>
     - Telescope <https://github.com/nvim-telescope/telescope.nvim>
+    - FzfLua <https://github.com/ibhagwan/fzf-lua>
 
 
 INSTALLATION                   *todo-comments.nvim-todo-comments-installation*
@@ -76,8 +78,8 @@ Todo comes with the following defaults:
         TODO = { icon = " ", color = "info" },
         HACK = { icon = " ", color = "warning" },
         WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
-        PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-        NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+        PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+        NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
         TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
       },
       gui_style = {
@@ -166,7 +168,7 @@ Each of the commands below accept the following arguments:
 - `cwd` - Specify the directory to search for comments, like:
 
 >vim
-    :TodoTrouble cwd=~/projects/foobar
+    :TodoTelescope cwd=~/projects/foobar
 <
 
 - `keywords` - Comma separated list of keywords to filter results by. Keywords are case-sensitive.
@@ -186,9 +188,11 @@ This uses the quickfix list to show all todos in your project.
 This uses the location list to show all todos in your project.
 
 
-:TODOTROUBLE ~
+:TROUBLE TODO ~
 
 List all project todos in trouble <https://github.com/folke/trouble.nvim>
+
+Use Trouble’s filtering: `Trouble todo filter = {tag = {TODO,FIX,FIXME}}`
 
 
   See screenshot at the top
@@ -197,6 +201,8 @@ List all project todos in trouble <https://github.com/folke/trouble.nvim>
 
 Search through all project todos with Telescope
 
+
+  [!Note] The same can be done with `:TodoFzfLua`
 ==============================================================================
 2. Links                                            *todo-comments.nvim-links*
 

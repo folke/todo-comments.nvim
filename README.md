@@ -12,16 +12,17 @@
 - configurable **signs**
 - open todos in a **quickfix** list
 - open todos in [Trouble](https://github.com/folke/trouble.nvim)
-- search todos with [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+- search todos with [Telescope](https://github.com/nvim-telescope/telescope.nvim) & [FzfLua](https://github.com/ibhagwan/fzf-lua)
 
 ## ⚡️ Requirements
 
 - Neovim >= 0.8.0 (use the `neovim-pre-0.8.0` branch for older versions)
 - a [patched font](https://www.nerdfonts.com/) for the icons, or change them to simple ASCII characters
 - optional:
-  - [ripgrep](https://github.com/BurntSushi/ripgrep) and [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) are used for searching.
-  - [Trouble](https://github.com/folke/trouble.nvim)
-  - [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+  + [ripgrep](https://github.com/BurntSushi/ripgrep) and [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) are used for searching.
+  + [Trouble](https://github.com/folke/trouble.nvim)
+  + [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+  + [FzfLua](https://github.com/ibhagwan/fzf-lua)
 
 ## 📦 Installation
 
@@ -60,8 +61,8 @@ Todo comes with the following defaults:
     TODO = { icon = " ", color = "info" },
     HACK = { icon = " ", color = "warning" },
     WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
-    PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-    NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+    PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+    NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
     TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
   },
   gui_style = {
@@ -151,7 +152,7 @@ Each of the commands below accept the following arguments:
 - `cwd` - Specify the directory to search for comments, like:
 
 ```vim
-:TodoTrouble cwd=~/projects/foobar
+:TodoTelescope cwd=~/projects/foobar
 ```
 
 - `keywords` - Comma separated list of keywords to filter results by. Keywords are case-sensitive.
@@ -172,9 +173,11 @@ This uses the location list to show all todos in your project.
 
 ![image](https://user-images.githubusercontent.com/292349/118135332-bf9c2300-b3b7-11eb-9a40-1307feb27c44.png)
 
-### 🚦 `:TodoTrouble`
+### 🚦 `:Trouble todo`
 
 List all project todos in [trouble](https://github.com/folke/trouble.nvim)
+
+Use Trouble's filtering: `Trouble todo filter = {tag = {TODO,FIX,FIXME}}`
 
 > See screenshot at the top
 
@@ -183,6 +186,9 @@ List all project todos in [trouble](https://github.com/folke/trouble.nvim)
 Search through all project todos with Telescope
 
 ![image](https://user-images.githubusercontent.com/292349/118135371-ccb91200-b3b7-11eb-9002-66af3b683cf0.png)
+
+> [!Note]
+> The same can be done with `:TodoFzfLua`
 
 <!-- markdownlint-disable-file MD033 -->
 <!-- markdownlint-configure-file { "MD013": { "line_length": 120 } } -->

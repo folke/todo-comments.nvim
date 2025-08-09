@@ -16,12 +16,13 @@ M.config = {
       }
     end,
   },
-  views = {
+  modes = {
     todo = {
       events = { "BufEnter", "BufWritePost" },
       source = "todo",
       groups = {
-        { "directory" },
+        { "tag", format = "{todo_icon} {tag}" },
+        -- { "directory" },
         { "filename", format = "{file_icon} {filename} {count}" },
       },
       sort = { { buf = 0 }, "filename", "pos", "message" },

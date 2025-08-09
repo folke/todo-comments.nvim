@@ -1,5 +1,54 @@
 # Changelog
 
+## [1.4.0](https://github.com/folke/todo-comments.nvim/compare/v1.3.0...v1.4.0) (2024-09-16)
+
+
+### Features
+
+* **fzf:** add fzf-lua support in Readme & add TodoFzfLua command ([#312](https://github.com/folke/todo-comments.nvim/issues/312)) ([6d6cf47](https://github.com/folke/todo-comments.nvim/commit/6d6cf47b06638bd037c7b6f87fd284d4066d8a51))
+
+
+### Bug Fixes
+
+* **config:** select `fg` by maximizing contrast rather than check if a color is dark ([#316](https://github.com/folke/todo-comments.nvim/issues/316)) ([76990a9](https://github.com/folke/todo-comments.nvim/commit/76990a9c04083068e132e4d0c9d13ef7e4635a9e))
+
+## [1.3.0](https://github.com/folke/todo-comments.nvim/compare/v1.2.0...v1.3.0) (2024-07-07)
+
+
+### Features
+
+* added support for fzf-lua ([fe5a7c6](https://github.com/folke/todo-comments.nvim/commit/fe5a7c66d77bcb3895acda55b9fa4519110eb154))
+* **fzf:** multiline by default ([8fdea2a](https://github.com/folke/todo-comments.nvim/commit/8fdea2acf78aa16b3881aa801853fa86b02c2fd8))
+* **highlight:** allow extended highlighting patterns ([#185](https://github.com/folke/todo-comments.nvim/issues/185)) ([#255](https://github.com/folke/todo-comments.nvim/issues/255)) ([76c8fee](https://github.com/folke/todo-comments.nvim/commit/76c8feeda805db77b6ffb222a79661236d7a2aba))
+* **highlight:** allow highlighting the full pattern ([#180](https://github.com/folke/todo-comments.nvim/issues/180)) ([ad775a7](https://github.com/folke/todo-comments.nvim/commit/ad775a7ed187761c56d14421cecab44a0656028d))
+
+
+### Bug Fixes
+
+* don't use tbl_flatten. Fixes [#272](https://github.com/folke/todo-comments.nvim/issues/272) ([9c104cf](https://github.com/folke/todo-comments.nvim/commit/9c104cf7868f1c739b43a07e5593666cc9de2d67))
+* **extension:** provide default icon ([#274](https://github.com/folke/todo-comments.nvim/issues/274)) ([7de4e85](https://github.com/folke/todo-comments.nvim/commit/7de4e85211e3301572393f4b4957bff463f188fc)), closes [#202](https://github.com/folke/todo-comments.nvim/issues/202)
+* **highlight:** match to the end of length `#matched` ([#288](https://github.com/folke/todo-comments.nvim/issues/288)) ([a40fa7e](https://github.com/folke/todo-comments.nvim/commit/a40fa7e421a0c363f65db204f5f0ac075d3a8967))
+* **telecope:** icons highlight. ([#279](https://github.com/folke/todo-comments.nvim/issues/279)) ([4573f4f](https://github.com/folke/todo-comments.nvim/commit/4573f4f1f167a2f928a46043c7fea6d1cf333fb9))
+* ternary evaluation in setlist for opts.open ([#252](https://github.com/folke/todo-comments.nvim/issues/252)) ([c7a6a02](https://github.com/folke/todo-comments.nvim/commit/c7a6a02823ca4cbecfee3c2a32d8674573308014))
+* **trouble:** compatibility with Trouble v3 ([#286](https://github.com/folke/todo-comments.nvim/issues/286)) ([01b4599](https://github.com/folke/todo-comments.nvim/commit/01b4599b36ea873305a993c93cb6186cb03a51e7))
+
+
+### Reverts
+
+* feat(highlight): allow highlighting the full pattern ([#180](https://github.com/folke/todo-comments.nvim/issues/180)) ([996d1a7](https://github.com/folke/todo-comments.nvim/commit/996d1a71d634bfc934d52021a0db99ee99add7c2))
+
+## [1.2.0](https://github.com/folke/todo-comments.nvim/compare/v1.1.0...v1.2.0) (2024-03-27)
+
+
+### Features
+
+* added source for trouble v3 ([9935ae9](https://github.com/folke/todo-comments.nvim/commit/9935ae96190c4c177cf0a0dfaddbe4a8addf3eed))
+
+
+### Bug Fixes
+
+* **trouble:** trouble v3 support ([3e45f2f](https://github.com/folke/todo-comments.nvim/commit/3e45f2fad81e7eca409280836620310b1267e1c7))
+
 ## [1.1.0](https://github.com/folke/todo-comments.nvim/compare/v1.0.1...v1.1.0) (2023-03-31)
 
 

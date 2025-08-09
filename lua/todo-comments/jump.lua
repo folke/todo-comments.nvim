@@ -1,5 +1,5 @@
-local highlight = require("todo-comments.highlight")
 local config = require("todo-comments.config")
+local highlight = require("todo-comments.highlight")
 local util = require("todo-comments.util")
 
 local M = {}
