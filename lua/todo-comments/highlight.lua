@@ -334,6 +334,10 @@ function M.attach(win)
           return true
         end
 
+        -- Only update the visible part
+        -- The invisible part will be updated when 'WinScrolled'
+        first = math.max(first, vim.fn.line("w0", win) - 1)
+        last_new = math.min(last_new, vim.fn.line("w$", win))
         M.redraw(buf, first, last_new)
       end,
       on_detach = function()
