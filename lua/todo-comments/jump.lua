@@ -13,13 +13,25 @@ local function jump(up, opts)
   local buf = vim.api.nvim_get_current_buf()
 
   local pos = vim.api.nvim_win_get_cursor(win)
+  local line_count =  vim.api.nvim_buf_line_count(buf)
 
-  local from = pos[1] + 1
-  local to = vim.api.nvim_buf_line_count(buf)
+  local to
+  local from
 
-  if up then
+  if opts.last and up then
+    from = 1
+    to = line_count
+    up = not up
+  elseif opts.last and not up then
+    from = line_count
+    to = 1
+    up = not up
+  elseif up then
     from = pos[1] - 1
     to = 1
+  else
+    from = pos[1] + 1
+    to = line_count
   end
 
   for l = from, to, up and -1 or 1 do
@@ -38,17 +50,36 @@ local function jump(up, opts)
 
     if kw then
       vim.api.nvim_win_set_cursor(win, { l, start - 1 })
-      return
+      return true
     end
   end
-  util.warn("No more todo comments to jump to")
+  return false
 end
 
 function M.next(opts)
-  jump(false, opts)
+  if jump(false, opts) then
+    return
+  end
+
+  if config.options.wrap or opts.wrap then
+    opts.last = true
+    jump(true, opts)
+  else
+    util.warn("No more todo comments to jump to")
+  end
 end
+
 function M.prev(opts)
-  jump(true, opts)
+  if jump(true, opts) then
+    return
+  end
+
+  if config.options.wrap or opts.wrap then
+    opts.last = true
+    jump(false, opts)
+  else
+    util.warn("No more todo comments to jump to")
+  end
 end
 
 return M
