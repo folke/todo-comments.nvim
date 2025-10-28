@@ -214,31 +214,33 @@ function M.highlight(buf, first, last, _event)
 
       local hl = Config.options.highlight
 
-      if not is_multiline then
-        -- before highlights
-        if hl.before == "fg" then
-          add_highlight(buf, Config.ns, hl_fg, lnum, 0, start)
-        elseif hl.before == "bg" then
-          add_highlight(buf, Config.ns, hl_bg, lnum, 0, start)
+      if hl.enable then
+        if not is_multiline then
+          -- before highlights
+          if hl.before == "fg" then
+            add_highlight(buf, Config.ns, hl_fg, lnum, 0, start)
+          elseif hl.before == "bg" then
+            add_highlight(buf, Config.ns, hl_bg, lnum, 0, start)
+          end
+
+          -- tag highlights
+          if hl.keyword == "wide" or hl.keyword == "wide_bg" then
+            add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
+          elseif hl.keyword == "wide_fg" then
+            add_highlight(buf, Config.ns, hl_fg, lnum, math.max(start - 1, 0), finish + 1)
+          elseif hl.keyword == "bg" then
+            add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
+          elseif hl.keyword == "fg" then
+            add_highlight(buf, Config.ns, hl_fg, lnum, start, finish)
+          end
         end
 
-        -- tag highlights
-        if hl.keyword == "wide" or hl.keyword == "wide_bg" then
-          add_highlight(buf, Config.ns, hl_bg, lnum, math.max(start - 1, 0), finish + 1)
-        elseif hl.keyword == "wide_fg" then
-          add_highlight(buf, Config.ns, hl_fg, lnum, math.max(start - 1, 0), finish + 1)
-        elseif hl.keyword == "bg" then
-          add_highlight(buf, Config.ns, hl_bg, lnum, start, finish)
-        elseif hl.keyword == "fg" then
-          add_highlight(buf, Config.ns, hl_fg, lnum, start, finish)
+        -- after highlights
+        if hl.after == "fg" then
+          add_highlight(buf, Config.ns, hl_fg, lnum, finish, #line)
+        elseif hl.after == "bg" then
+          add_highlight(buf, Config.ns, hl_bg, lnum, finish, #line)
         end
-      end
-
-      -- after highlights
-      if hl.after == "fg" then
-        add_highlight(buf, Config.ns, hl_fg, lnum, finish, #line)
-      elseif hl.after == "bg" then
-        add_highlight(buf, Config.ns, hl_bg, lnum, finish, #line)
       end
 
       if not is_multiline then
