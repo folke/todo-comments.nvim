@@ -183,6 +183,21 @@ Use Trouble's filtering: `Trouble todo filter = {tag = {TODO,FIX,FIXME}}`
 
 Search through all project todos with Telescope
 
+This command accepts the following optional arguments:
+
+- `path` - Change how paths are displayed in the results.
+
+```vim
+:TodoTelescope path=false
+:TodoTelescope path=name
+```
+
+- `position` - Disable the line and column numbers.
+
+```vim
+:TodoTelescope position=false
+```
+
 ![image](https://user-images.githubusercontent.com/292349/118135371-ccb91200-b3b7-11eb-9002-66af3b683cf0.png)
 
 > [!Note]
@@ -191,3 +206,4 @@ Search through all project todos with Telescope
 <!-- markdownlint-disable-file MD033 -->
 <!-- markdownlint-configure-file { "MD013": { "line_length": 120 } } -->
 <!-- markdownlint-configure-file { "MD004": { "style": "sublist" } } -->
+
