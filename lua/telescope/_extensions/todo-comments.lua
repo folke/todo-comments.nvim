@@ -21,6 +21,17 @@ local function keywords_filter(opts_keywords)
   end, all_keywords)
 end
 
+local function format_display(entry, opts)
+  if opts.path == false then return "" end
+  local filename = opts.path == "name" and vim.fn.fnamemodify(entry.filename, ":t") or entry.filename
+
+  if opts.position == false then
+    return string.format("%s ", filename)
+  else
+    return string.format("%s:%s:%s ", filename, entry.lnum, entry.col)
+  end
+end
+
 local function todo(opts)
   opts = opts or {}
   opts.vimgrep_arguments = { Config.options.search.command }
@@ -33,7 +44,8 @@ local function todo(opts)
   opts.entry_maker = function(line)
     local ret = entry_maker(line)
     ret.display = function(entry)
-      local display = string.format("%s:%s:%s ", entry.filename, entry.lnum, entry.col)
+      local display = format_display(entry, opts)
+
       local text = entry.text
       local start, finish, kw = Highlight.match(text)
 
