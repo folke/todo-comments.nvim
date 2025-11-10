@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.5.0](https://github.com/folke/todo-comments.nvim/compare/v1.4.0...v1.5.0) (2025-11-10)
+
+
+### Features
+
+* **snacks:** added picker source for snacks ([aba91f1](https://github.com/folke/todo-comments.nvim/commit/aba91f1d0d8ef9756fb9847e925b872bb8d7f67c))
+
+
+### Bug Fixes
+
+* **snacks:** make todo comments preview work ([bb1eacf](https://github.com/folke/todo-comments.nvim/commit/bb1eacfdc83a57da836198cad520b1bd9e445074))
+* **snacks:** snacks picker has not been released yet... ([304a8d2](https://github.com/folke/todo-comments.nvim/commit/304a8d204ee787d2544d8bc23cd38d2f929e7cc5))
+
+
+### Performance Improvements
+
+* **highlight:** only render/update lines that are invalid. Closes [#358](https://github.com/folke/todo-comments.nvim/issues/358). Closes [#372](https://github.com/folke/todo-comments.nvim/issues/372) ([3434264](https://github.com/folke/todo-comments.nvim/commit/3434264850eca4a39407e2827bd7f02ec6a80ce5))
+
 ## [1.4.0](https://github.com/folke/todo-comments.nvim/compare/v1.3.0...v1.4.0) (2024-09-16)
 
 
