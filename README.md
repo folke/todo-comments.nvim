@@ -83,6 +83,10 @@ Todo comes with the following defaults:
     after = "fg", -- "fg" or "bg" or empty
     pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
     comments_only = true, -- uses treesitter to match keywords in comments only
+    -- override the comments_only option for specific filetypes
+    comments_only_ft_override = {
+      markdown = false, -- override comments_only for markdown files
+    },
     max_line_len = 400, -- ignore lines longer than this
     exclude = {}, -- list of file types to exclude highlighting
   },

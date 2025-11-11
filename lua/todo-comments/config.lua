@@ -11,7 +11,6 @@ M.loaded = false
 M.ns = vim.api.nvim_create_namespace("todo-comments")
 
 --- @class TodoOptions
--- TODO: add support for markdown todos
 local defaults = {
   signs = true, -- show icons in the signs column
   sign_priority = 8, -- sign priority
@@ -50,6 +49,10 @@ local defaults = {
     pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlightng (vim regex)
     -- pattern = { [[.*<(KEYWORDS)\s*:]], [[.*\@(KEYWORDS)\s*]] }, -- pattern used for highlightng (vim regex)
     comments_only = true, -- uses treesitter to match keywords in comments only
+    -- override the comments_only option for specific filetypes
+    comments_only_ft_override = {
+      markdown = false, -- override comments_only for markdown files
+    },
     max_line_len = 400, -- ignore lines longer than this
     exclude = {}, -- list of file types to exclude highlighting
     throttle = 200,
