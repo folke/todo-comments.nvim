@@ -15,8 +15,21 @@ local function keywords_filter(filter)
   end, all)
 end
 
----@param opts? {keywords: string[]}
+local function parse_opts(opts)
+  if not opts or type(opts) ~= "string" then
+    return opts
+  end
+  return {
+    keywords = opts:match("keywords=(%S*)"),
+    cwd = opts:match("cwd=(%S*)"),
+  }
+end
+
+---@param opts? {keywords: string[], cwd: string}
 function M.todo(opts)
+  opts = parse_opts(opts) or {}
+  opts.cwd = opts.cwd or "."
+  opts.cwd = vim.fn.fnamemodify(opts.cwd, ":p")
   opts = vim.tbl_extend("force", {
     no_esc = true,
     multiline = true,
