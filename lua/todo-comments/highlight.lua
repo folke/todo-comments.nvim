@@ -91,6 +91,10 @@ end
 ---@param from number
 ---@param to number
 local function add_highlight(buf, ns, hl, line, from, to)
+  local line_length = vim.api.nvim_buf_get_lines(buf, line, line + 1, false)[1]:len()
+  if to > line_length then
+    to = line_length
+  end
   vim.api.nvim_buf_set_extmark(buf, ns, line, from, {
     end_col = to,
     hl_group = hl,
