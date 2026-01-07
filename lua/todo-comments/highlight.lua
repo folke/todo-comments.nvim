@@ -91,7 +91,8 @@ end
 ---@param from number
 ---@param to number
 local function add_highlight(buf, ns, hl, line, from, to)
-  vim.api.nvim_buf_set_extmark(buf, ns, line, from, {
+  -- Wrap in pcall to handle race conditions during buffer modifications (e.g., abbreviation expansion)
+  pcall(vim.api.nvim_buf_set_extmark, buf, ns, line, from, {
     end_col = to,
     hl_group = hl,
     priority = 500,
