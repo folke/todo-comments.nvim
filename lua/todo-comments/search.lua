@@ -42,6 +42,8 @@ function M.process(lines)
   return results
 end
 
+---@param cb fun(results: table[]):nil
+---@param opts table
 function M.search(cb, opts)
   opts = opts or {}
   opts.cwd = opts.cwd or "."
@@ -67,7 +69,17 @@ function M.search(cb, opts)
 
   local args = {}
   vim.list_extend(args, Config.options.search.args)
-  vim.list_extend(args, { Config.search_regex(keywords_filter(opts.keywords)), opts.cwd })
+  vim.list_extend(args, { (Config.search_regex(keywords_filter(opts.keywords))) })
+
+  local filename = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(0))
+  if type(filename) ~= "string" then
+    error("Failed to retrieve filename for current buffer")
+  end
+  if opts.current_buffer_only then
+    vim.list_extend(args, { filename })
+  else
+    vim.list_extend(args, { opts.cwd })
+  end
 
   Job:new({
     command = command,
@@ -77,13 +89,36 @@ function M.search(cb, opts)
         local error = table.concat(j:stderr_result(), "\n")
         Util.error(command .. " failed with code " .. code .. "\n" .. error)
       end
+
       if code == 1 and opts.disable_not_found_warnings ~= true then
-        Util.warn("no todos found")
+        if opts.current_buffer_only then
+          Util.warn("No TODOs found in " .. vim.fn.shellescape(filename))
+        else
+          Util.warn("No TODOs found")
+        end
       end
+
       local lines = j:result()
       cb(M.process(lines))
     end),
   }):start()
+end
+
+---@return boolean|nil
+local function parse_bool(input)
+  if type(input) ~= "string" then
+    return nil
+  end
+
+  input = input:lower()
+
+  if "true" == input then
+    return true
+  elseif "false" == input then
+    return false
+  else
+    return nil
+  end
 end
 
 local function parse_opts(opts)
@@ -93,6 +128,7 @@ local function parse_opts(opts)
   return {
     keywords = opts:match("keywords=(%S*)"),
     cwd = opts:match("cwd=(%S*)"),
+    current_buffer_only = parse_bool(opts:match("current_buffer_only=(%S*)")),
   }
 end
 
@@ -113,7 +149,7 @@ function M.setlist(opts, use_loclist)
     else
       vim.fn.setqflist({}, " ", { title = "Todo", id = "$", items = results })
     end
-    if opts.open then
+    if opts.open and #results > 0 then
       if use_loclist then
         vim.cmd([[lopen]])
       else
