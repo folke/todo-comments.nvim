@@ -53,6 +53,13 @@ local defaults = {
     max_line_len = 400, -- ignore lines longer than this
     exclude = {}, -- list of file types to exclude highlighting
     throttle = 200,
+    padding = { -- padding characters around keywords
+      enabled = false, -- enable padding feature
+      left = "", -- left padding character(s)
+      right = "", -- right padding character(s)
+      hide_colon = false, -- hide the colon after the keyword
+      hide_on_cursor = true, -- hide padding when cursor is on the line
+    },
   },
   -- list of named colors where we try to extract the guifg from the
   -- list of hilight groups or use the hex color if hl not found as a fallback
