@@ -2,6 +2,7 @@
 -- TODO: foobar
 -- dddddd
 local Config = require("todo-comments.config")
+local Padding = require("todo-comments.padding")
 
 ---@module 'uv'
 
@@ -9,6 +10,7 @@ local M = {}
 M.enabled = false
 M.bufs = {} ---@type table<number, boolean>
 M.wins = {} ---@type table<number, boolean>
+M.cursor_lines = {} ---@type table<number, number>
 
 -- PERF: fully optimised
 -- FIX: ddddddasdasdasdasdasda
@@ -172,6 +174,17 @@ function M.highlight(buf, first, last, _event)
   end
 
   vim.api.nvim_buf_clear_namespace(buf, Config.ns, first, last + 1)
+  Padding.clear(buf, first, last)
+
+  -- Get cursor position for this buffer
+  local cursor_line = nil
+  local wins = vim.fn.win_findbuf(buf)
+  if #wins > 0 then
+    local ok, cursor = pcall(vim.api.nvim_win_get_cursor, wins[1])
+    if ok then
+      cursor_line = cursor[1] - 1
+    end
+  end
 
   -- clear signs
   for _, sign in pairs(vim.fn.sign_getplaced(buf, { group = "todo-signs" })[1].signs) do
@@ -251,6 +264,9 @@ function M.highlight(buf, first, last, _event)
         elseif hl.keyword == "fg" then
           add_highlight(buf, Config.ns, hl_fg, lnum, start, finish)
         end
+
+        -- Add padding around keyword
+        Padding.add(buf, lnum, kw, start, finish, line, lnum == cursor_line)
       end
 
       -- after highlights
@@ -360,6 +376,7 @@ function M.attach(win, force)
       on_detach = function()
         M.state[buf] = nil
         M.bufs[buf] = nil
+        M.cursor_lines[buf] = nil
       end,
     })
 
@@ -398,9 +415,11 @@ function M.stop()
   for buf, _ in pairs(M.bufs) do
     if vim.api.nvim_buf_is_valid(buf) then
       pcall(vim.api.nvim_buf_clear_namespace, buf, Config.ns, 0, -1)
+      pcall(vim.api.nvim_buf_clear_namespace, buf, Padding.ns, 0, -1)
     end
   end
   M.bufs = {}
+  M.cursor_lines = {}
 end
 
 function M.start()
@@ -426,6 +445,34 @@ function M.start()
     group = group,
     callback = function(ev)
       vim.defer_fn(require("todo-comments.config").colors, 10)
+    end,
+  })
+  -- Cursor movement tracking for hide_on_cursor feature
+  vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+    group = group,
+    callback = function(ev)
+      if not Config.options.highlight.padding.enabled or not Config.options.highlight.padding.hide_on_cursor then
+        return
+      end
+
+      local buf = ev.buf
+      local ok, cursor = pcall(vim.api.nvim_win_get_cursor, 0)
+      if not ok then
+        return
+      end
+      local cursor_line = cursor[1] - 1
+      local prev_line = M.cursor_lines[buf]
+
+      if prev_line and prev_line ~= cursor_line then
+        -- Update previous line (add padding back)
+        M.highlight(buf, prev_line, prev_line)
+      end
+      if cursor_line then
+        -- Update current line (remove padding)
+        M.highlight(buf, cursor_line, cursor_line)
+      end
+
+      M.cursor_lines[buf] = cursor_line
     end,
   })
 

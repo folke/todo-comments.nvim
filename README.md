@@ -9,6 +9,7 @@
 
 - **highlight** your todo comments in different styles
 - optionally only highlights todos in comments using **TreeSitter**
+- configurable **padding** around keywords with virtual text
 - configurable **signs**
 - open todos in a **quickfix** list
 - open todos in [Trouble](https://github.com/folke/trouble.nvim)
@@ -85,6 +86,13 @@ Todo comes with the following defaults:
     comments_only = true, -- uses treesitter to match keywords in comments only
     max_line_len = 400, -- ignore lines longer than this
     exclude = {}, -- list of file types to exclude highlighting
+    padding = { -- padding characters around keywords
+      enabled = false, -- enable padding feature
+      left = "", -- left padding character(s)
+      right = "", -- right padding character(s)
+      hide_colon = false, -- hide the colon after the keyword
+      hide_on_cursor = true, -- hide padding when cursor is on the line
+    },
   },
   -- list of named colors where we try to extract the guifg from the
   -- list of highlight groups or use the hex color if hl not found as a fallback
@@ -113,6 +121,92 @@ Todo comes with the following defaults:
 }
 
 ```
+
+### Padding
+
+You can add virtual padding around keywords, creating a more distinctive appearance for your TODO comments.
+
+#### Basic Configuration
+
+```lua
+require("todo-comments").setup({
+  highlight = {
+    padding = {
+      enabled = true,
+      left = "",
+      right = "",
+      hide_colon = true,
+      hide_on_cursor = true,
+    },
+  },
+})
+
+-- Required for hide_colon to work
+vim.opt.conceallevel = 2
+```
+
+This configuration will display `TODO` when the cursor is away from the line, and `TODO:` when the cursor is on the line.
+
+#### Options
+
+- `enabled` - Enable or disable the padding feature (default: `false`)
+- `left` - Character(s) to display before the keyword (default: `""`)
+- `right` - Character(s) to display after the keyword (default: `""`)
+- `hide_colon` - Conceal the colon after the keyword (default: `false`). Requires `vim.opt.conceallevel >= 1`
+- `hide_on_cursor` - Hide padding when the cursor is on the line (default: `true`)
+
+**Note:** The `hide_colon` and `hide_on_cursor` options work independently. When `hide_on_cursor` is `false`, the padding and colon concealing remain active even when the cursor is on the line.
+
+#### Per-Keyword Padding
+
+You can customize padding for individual keywords:
+
+```lua
+require("todo-comments").setup({
+  highlight = {
+    padding = {
+      enabled = true,
+      left = "",
+      right = "",
+      hide_colon = true,
+      hide_on_cursor = true,
+    },
+  },
+  keywords = {
+    WARN = {
+      padding = {
+        left = " ",
+        right = " ",
+      },
+    },
+    FIX = {
+      padding = {
+        left = " ",
+        right = "",
+        hide_colon = false,
+      },
+    },
+    NOTE = {
+      padding = {
+        right = " ",
+      },
+    },
+    BUG = {
+      padding = {
+        left = "",
+        right = "",
+      },
+    }
+  },
+})
+```
+
+In this example:
+- `WARN` keywords will be surrounded by ` ` and ` `.
+- `FIX` keywords will be surrounded by `` and ``, with the colon always visible
+- `NOTE` keywords will inherit the default left padding but be padded with ` ` on the right.
+- `BUG` keywords will have no padding.
+- Other keywords will use the default padding configuration
 
 ### Jumping
 
