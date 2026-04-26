@@ -47,11 +47,20 @@ function M.match(str, patterns)
     patterns = { patterns }
   end
 
+  local case_flag = Config.options.highlight.case_sensitive ~= false and [[\C]] or [[\c]]
   for _, pattern in pairs(patterns) do
-    local m = vim.fn.matchlist(str, [[\v\C]] .. pattern)
+    local m = vim.fn.matchlist(str, [[\v]] .. case_flag .. pattern)
     if #m > 1 and m[2] then
       local match = m[2]
       local kw = m[3] ~= "" and m[3] or m[2]
+      -- when case_sensitive=false, the captured keyword may differ in case from
+      -- the config key (e.g. "todo" vs "TODO") -- normalize via the uppercase map
+      if not Config.keywords[kw] then
+        local normalized = Config.keywords_upper[kw:upper()]
+        if normalized then
+          kw = normalized
+        end
+      end
       local start = str:find(match, 1, true)
       return start, start + #match, kw
     end
