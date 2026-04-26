@@ -49,6 +49,7 @@ local defaults = {
     -- pattern can be a string, or a table of regexes that will be checked
     pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlightng (vim regex)
     -- pattern = { [[.*<(KEYWORDS)\s*:]], [[.*\@(KEYWORDS)\s*]] }, -- pattern used for highlightng (vim regex)
+    case_sensitive = true, -- use case sensitive matching for keywords
     comments_only = true, -- uses treesitter to match keywords in comments only
     max_line_len = 400, -- ignore lines longer than this
     exclude = {}, -- list of file types to exclude highlighting
@@ -109,6 +110,15 @@ function M._setup()
     for _, alt in pairs(opts.alt or {}) do
       M.keywords[alt] = kw
     end
+  end
+
+  -- precomputed uppercase map for case-insensitive keyword lookup.
+  -- when case_sensitive=false, the regex may capture any-case variant (e.g. "todo"),
+  -- this map allows normalizing it back to the key as defined in the config (e.g. "TODO").
+  -- built once at setup to allow O(1) lookup on every highlighted line.
+  M.keywords_upper = {}
+  for k in pairs(M.keywords) do
+    M.keywords_upper[k:upper()] = k
   end
 
   local function tags(keywords)
