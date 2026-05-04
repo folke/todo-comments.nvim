@@ -373,7 +373,8 @@ function M.attach(win, force)
         end,
         on_changedtree = function(changes)
           for _, ch in ipairs(changes or {}) do
-            M.invalidate(buf, ch[1], ch[3] + 1)
+            local end_row = (#ch == 6) and ch[4] or ch[3]
+            M.invalidate(buf, ch[1], end_row + 1)
           end
         end,
       })
