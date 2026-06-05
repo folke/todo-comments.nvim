@@ -392,6 +392,7 @@ function M.stop()
   pcall(vim.api.nvim_clear_autocmds, { group = "Todo" })
   pcall(vim.api.nvim_del_augroup_by_name, "Todo")
   M.wins = {}
+  M.state = {}
 
   ---@diagnostic disable-next-line: missing-parameter
   vim.fn.sign_unplace("todo-signs")
