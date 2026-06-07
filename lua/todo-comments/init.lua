@@ -6,7 +6,11 @@ local M = {}
 M.setup = config.setup
 
 function M.reset()
-  require("plenary.reload").reload_module("todo")
+  for name, _ in pairs(package.loaded) do
+    if name:match("^todo%-comments") then
+      package.loaded[name] = nil
+    end
+  end
   require("todo-comments").setup()
 end
 

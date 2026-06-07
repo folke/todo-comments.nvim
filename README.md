@@ -1,6 +1,6 @@
 # ✅ Todo Comments
 
-**todo-comments** is a lua plugin for Neovim >= 0.8.0 to highlight and search for todo comments like
+**todo-comments** is a lua plugin for Neovim >= 0.10.0 to highlight and search for todo comments like
 `TODO`, `HACK`, `BUG` in your code base.
 
 ![image](https://user-images.githubusercontent.com/292349/118135272-ad21e980-b3b7-11eb-881c-e45a4a3d6192.png)
@@ -16,10 +16,10 @@
 
 ## ⚡️ Requirements
 
-- Neovim >= 0.8.0 (use the `neovim-pre-0.8.0` branch for older versions)
+- Neovim >= 0.10.0
 - a [patched font](https://www.nerdfonts.com/) for the icons, or change them to simple ASCII characters
 - optional:
-  + [ripgrep](https://github.com/BurntSushi/ripgrep) and [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) are used for searching.
+  + [ripgrep](https://github.com/BurntSushi/ripgrep) is used for searching.
   + [Trouble](https://github.com/folke/trouble.nvim)
   + [Telescope](https://github.com/nvim-telescope/telescope.nvim)
   + [FzfLua](https://github.com/ibhagwan/fzf-lua)
@@ -33,7 +33,6 @@ Install the plugin with your preferred package manager:
 ```lua
 {
   "folke/todo-comments.nvim",
-  dependencies = { "nvim-lua/plenary.nvim" },
   opts = {
     -- your configuration comes here
     -- or leave it empty to use the default settings

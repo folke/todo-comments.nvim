@@ -2,7 +2,6 @@
   "neodev": {
     "library": {
       "plugins": [
-        "plenary.nvim",
         "nvim-web-devicons",
         "trouble.nvim"
       ]
