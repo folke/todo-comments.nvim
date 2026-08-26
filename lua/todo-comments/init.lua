@@ -21,4 +21,12 @@ end
 M.jump_prev = jump.prev
 M.jump_next = jump.next
 
+function M.toggle()
+  require("todo-comments.tasks").toggle()
+end
+
+function M.toggle_fold()
+  require("todo-comments.tasks").toggle_fold()
+end
+
 return M

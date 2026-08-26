@@ -43,6 +43,16 @@ local defaults = {
     multiline = true, -- enable multine todo comments
     multiline_pattern = "^.", -- lua pattern to match the next multiline from the start of the matched keyword
     multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
+    context = {
+      enabled = true, -- show context lines indicator
+      show_lines = "folded", -- "folded" (only when lines are hidden/folded), true (always) or false
+      lines_format = " (+%d lines)", -- format for context lines count
+    },
+    folding = {
+      enabled = true,
+      open_icon = "▼ ",
+      closed_icon = "▶ ",
+    },
     before = "", -- "fg" or "bg" or empty
     keyword = "wide", -- "fg", "bg", "wide" or empty. (wide is the same as bg, but will also highlight surrounding characters)
     after = "fg", -- "fg" or "bg" or empty
@@ -77,6 +87,24 @@ local defaults = {
     -- don't replace the (KEYWORDS) placeholder
     pattern = [[\b(KEYWORDS):]], -- ripgrep regex
     -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
+    badges = true, -- show task progress and context line badges in search pickers (Telescope, Trouble, Quickfix)
+  },
+  tasks = {
+    enabled = true, -- enable markdown checkbox detection in TODO blocks
+    signs = true, -- show checkbox icons in the sign column
+    checkboxes = {
+      todo = { icon = "󰄱 ", color = "info", pattern = "%[%s*%]" }, -- [ ]
+      doing = { icon = "󰡖 ", color = "warning", pattern = "%[%/%]" }, -- [/]
+      done = { icon = "󰄵 ", color = "hint", pattern = "%[[xX]%]" }, -- [x] or [X]
+    },
+    progress = {
+      enabled = true, -- show progress ratio in virtual text
+      show_count = true, -- shows "1/3" (enabled by default)
+      show_percent = true, -- shows "(33%)" (enabled by default)
+      icon = " ", -- progress icon
+      count_format = "%d/%d", -- format for count (e.g. 1/3)
+      percent_format = "(%d%%)", -- format for percentage (e.g. (33%))
+    },
   },
 }
 
@@ -146,6 +174,16 @@ function M.signs()
       texthl = "TodoSign" .. kw,
     })
   end
+
+  if M.options.tasks and M.options.tasks.enabled and M.options.tasks.signs then
+    for state, opts in pairs(M.options.tasks.checkboxes) do
+      local name = state:sub(1, 1):upper() .. state:sub(2)
+      vim.fn.sign_define("todo-sign-task-" .. state, {
+        text = opts.icon,
+        texthl = "TodoCheckbox" .. name,
+      })
+    end
+  end
 end
 
 function M.colors()
@@ -168,28 +206,30 @@ function M.colors()
   local sign_hl = Util.get_hl("SignColumn")
   local sign_bg = (sign_hl and sign_hl.background) and sign_hl.background or "NONE"
 
-  for kw, opts in pairs(M.options.keywords) do
-    local kw_color = opts.color or "default"
-    local hex
-
-    if kw_color:sub(1, 1) == "#" then
-      hex = kw_color
-    else
-      local colors = M.options.colors[kw_color]
-      colors = type(colors) == "string" and { colors } or colors
-
-      for _, color in pairs(colors) do
-        if color:sub(1, 1) == "#" then
-          hex = color
-          break
-        end
-        local c = Util.get_hl(color)
-        if c and c.foreground then
-          hex = c.foreground
-          break
-        end
+  local function resolve_hex(color_spec)
+    if not color_spec then
+      return nil
+    end
+    if color_spec:sub(1, 1) == "#" then
+      return color_spec
+    end
+    local colors = M.options.colors[color_spec] or color_spec
+    colors = type(colors) == "string" and { colors } or colors
+    for _, color in pairs(colors) do
+      if color:sub(1, 1) == "#" then
+        return color
+      end
+      local c = Util.get_hl(color)
+      if c and c.foreground then
+        return c.foreground
       end
     end
+    return nil
+  end
+
+  for kw, opts in pairs(M.options.keywords) do
+    local kw_color = opts.color or "default"
+    local hex = resolve_hex(kw_color)
     if not hex then
       error("Todo: no color for " .. kw)
     end
@@ -199,6 +239,21 @@ function M.colors()
     vim.cmd("hi def TodoFg" .. kw .. " guibg=NONE guifg=" .. hex .. " gui=" .. fg_gui)
     vim.cmd("hi def TodoSign" .. kw .. " guibg=" .. sign_bg .. " guifg=" .. hex .. " gui=NONE")
   end
+
+  -- Highlight groups for markdown checkboxes
+  if M.options.tasks and M.options.tasks.enabled then
+    for state, opts in pairs(M.options.tasks.checkboxes) do
+      local name = state:sub(1, 1):upper() .. state:sub(2)
+      local hex = resolve_hex(opts.color) or "#7C3AED"
+      vim.cmd("hi def TodoCheckbox" .. name .. " guibg=NONE guifg=" .. hex .. " gui=BOLD")
+    end
+  end
+
+  -- Highlight groups for multiline context info and task progress virtual text
+  local comment_hl = Util.get_hl("Comment")
+  local comment_fg = comment_hl and comment_hl.foreground or "#6B7280"
+  vim.cmd("hi def TodoContextInfo guibg=NONE guifg=" .. comment_fg .. " gui=italic")
+  vim.cmd("hi def TodoProgressRatio guibg=NONE guifg=" .. (resolve_hex("hint") or "#10B981") .. " gui=BOLD")
 end
 
 return M

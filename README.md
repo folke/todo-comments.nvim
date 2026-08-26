@@ -10,9 +10,12 @@
 - **highlight** your todo comments in different styles
 - optionally only highlights todos in comments using **TreeSitter**
 - configurable **signs**
+- **markdown task lists** inside `TODO` comments (`[ ]`, `[/]`, `[x]`) with live progress ratio (` 1/3 (33%)`)
+- **multiline context line indicators** (`+3 lines`) and simple **folding** (`:TodoToggleFold`)
+- interactive **checkbox toggling** (`:TodoToggle`)
 - open todos in a **quickfix** list
 - open todos in [Trouble](https://github.com/folke/trouble.nvim)
-- search todos with [Telescope](https://github.com/nvim-telescope/telescope.nvim) & [FzfLua](https://github.com/ibhagwan/fzf-lua)
+- search todos with [Telescope](https://github.com/nvim-telescope/telescope.nvim) & [FzfLua](https://github.com/ibhagwan/fzf-lua) with progress & context badges
 
 ## ⚡️ Requirements
 
@@ -78,6 +81,16 @@ Todo comes with the following defaults:
     multiline = true, -- enable multine todo comments
     multiline_pattern = "^.", -- lua pattern to match the next multiline from the start of the matched keyword
     multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
+    context = {
+      enabled = true, -- show context lines indicator
+      show_lines = "folded", -- "folded" (only when lines are hidden/folded), true (always) or false
+      lines_format = " (+%d lines)", -- format for context lines count
+    },
+    folding = {
+      enabled = true,
+      open_icon = "▼ ",
+      closed_icon = "▶ ",
+    },
     before = "", -- "fg" or "bg" or empty
     keyword = "wide", -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
     after = "fg", -- "fg" or "bg" or empty
@@ -109,9 +122,38 @@ Todo comes with the following defaults:
     -- don't replace the (KEYWORDS) placeholder
     pattern = [[\b(KEYWORDS):]], -- ripgrep regex
     -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
+    badges = true, -- show task progress and context line badges in search pickers (Telescope, Trouble, Quickfix)
+  },
+  tasks = {
+    enabled = true, -- enable markdown checkbox detection in TODO blocks
+    signs = true, -- show checkbox icons in the sign column
+    checkboxes = {
+      todo = { icon = "󰄱 ", color = "info", pattern = "%[%s*%]" }, -- [ ]
+      doing = { icon = "󰡖 ", color = "warning", pattern = "%[%/%]" }, -- [/]
+      done = { icon = "󰄵 ", color = "hint", pattern = "%[[xX]%]" }, -- [x] or [X]
+    },
+    progress = {
+      enabled = true, -- show progress ratio in virtual text
+      show_count = true, -- shows "1/3" (enabled by default)
+      show_percent = true, -- shows "(33%)" (enabled by default)
+      icon = " ", -- progress icon
+      count_format = "%d/%d", -- format for count (e.g. 1/3)
+      percent_format = "(%d%%)", -- format for percentage (e.g. (33%))
+    },
   },
 }
+```
 
+### Interactive Commands & Mappings
+
+You can toggle checkbox task states (`[ ]` ➔ `[/]` ➔ `[x]` ➔ `[ ]`) and fold/unfold multiline comments with:
+
+```lua
+-- Toggle checkbox status under cursor
+vim.keymap.set("n", "<leader>tt", "<cmd>TodoToggle<CR>", { desc = "Toggle TODO task status" })
+
+-- Toggle folding for multiline context comments
+vim.keymap.set("n", "<leader>tf", "<cmd>TodoToggleFold<CR>", { desc = "Toggle TODO multiline fold" })
 ```
 
 ### Jumping

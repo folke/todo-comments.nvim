@@ -18,6 +18,9 @@ end
 
 function M.process(lines)
   local results = {}
+  local ok_tasks, Tasks = pcall(require, "todo-comments.tasks")
+  local search_badges = Config.options.search and Config.options.search.badges ~= false
+
   for _, line in pairs(lines) do
     local file, row, col, text = line:match("^(.+):(%d+):(%d+):(.*)$")
     if file then
@@ -35,6 +38,70 @@ function M.process(lines)
         item.tag = kw
         item.text = vim.trim(text:sub(start))
         item.message = vim.trim(text:sub(finish + 1))
+
+        local header_tasks = { total = 0, done = 0, doing = 0 }
+        local tasks_opts = Config.options.tasks
+        if kw == "TODO" and tasks_opts and tasks_opts.enabled then
+          for state, cb_cfg in pairs(tasks_opts.checkboxes) do
+            if text:find(cb_cfg.pattern) then
+              header_tasks.total = header_tasks.total + 1
+              if state == "done" then
+                header_tasks.done = 1
+              elseif state == "doing" then
+                header_tasks.doing = 1
+              end
+              break
+            end
+          end
+        end
+
+        local stats = { total = 0, done = 0, doing = 0, lines = 0 }
+        if ok_tasks and Tasks and Tasks.get_block_stats then
+          local s_ok, s_res = pcall(Tasks.get_block_stats, file, item.lnum, start, kw)
+          if s_ok and s_res then
+            stats = s_res
+          end
+        end
+
+        local total_tasks = header_tasks.total + stats.total
+        local done_tasks = header_tasks.done + stats.done
+        local doing_tasks = header_tasks.doing + stats.doing
+
+        item.tasks = { total = total_tasks, done = done_tasks, doing = doing_tasks }
+        item.context_lines = stats.lines
+
+        if search_badges then
+          local badges = {}
+
+          -- Task progress badge
+          if kw == "TODO" and total_tasks > 0 and tasks_opts and tasks_opts.enabled and tasks_opts.progress and tasks_opts.progress.enabled ~= false then
+            local p_opts = tasks_opts.progress
+            local parts = {}
+            if p_opts.show_count ~= false then
+              table.insert(parts, string.format(p_opts.count_format or "%d/%d", done_tasks, total_tasks))
+            end
+            if p_opts.show_percent == true then
+              local pct = math.floor((done_tasks / total_tasks) * 100)
+              table.insert(parts, string.format(p_opts.percent_format or "(%d%%)", pct))
+            end
+            if #parts > 0 then
+              table.insert(badges, "[" .. table.concat(parts, " ") .. "]")
+            end
+          end
+
+          -- Multiline context lines badge
+          local hl_opts = Config.options.highlight
+          if stats.lines > 0 and hl_opts and hl_opts.context and hl_opts.context.enabled ~= false then
+            table.insert(badges, string.format("[+%d lines]", stats.lines))
+          end
+
+          if #badges > 0 then
+            local badge_str = table.concat(badges, " ")
+            item.text = item.text .. "  " .. badge_str
+            item.message = item.message .. "  " .. badge_str
+          end
+        end
+
         table.insert(results, item)
       end
     end
