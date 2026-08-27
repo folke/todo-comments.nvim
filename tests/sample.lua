@@ -53,5 +53,9 @@ local function process_payment(user_id, amount)
     return false
   end
 
+  -- 8. Single-Line TODO directly followed by executable code (0 context lines)
+  -- TODO: Single line todo without any continuation comments
+  local transaction_id = "tx_" .. tostring(user_id)
+
   return true
 end
