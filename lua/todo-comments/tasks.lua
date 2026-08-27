@@ -277,6 +277,12 @@ function M.toggle_fold()
   local fold_start = block.header_lnum + 2 -- 1-indexed next line after header
   local fold_end = block.end_lnum + 1
 
+  -- Ensure folding is enabled on window and allows manual fold creation
+  vim.wo.foldenable = true
+  if vim.wo.foldmethod ~= "manual" and vim.wo.foldmethod ~= "marker" then
+    vim.opt_local.foldmethod = "manual"
+  end
+
   local is_folded = vim.fn.foldclosed(fold_start) ~= -1
   if is_folded then
     pcall(vim.cmd, string.format("%d,%dfoldopen!", fold_start, fold_end))
