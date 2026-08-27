@@ -21,6 +21,7 @@ local fake_rg_lines = {
   "tests/sample.lua:43:6:  -- TODO: Payment processing and validation pipeline",
   "tests/sample.lua:50:8:    -- WARN: Invalid transaction attempt detected",
   "tests/sample.lua:57:6:  -- TODO: Single line todo without any continuation comments",
+  "tests/sample.lua:61:6:  -- TODO: TypeScript refactor",
 }
 
 local results = Search.process(fake_rg_lines)
@@ -63,5 +64,12 @@ assert(
   "Single-line TODO followed by code must have 0 context lines, found " .. tostring(todo_single_line.context_lines)
 )
 assert(todo_single_line.tasks.total == 0, "Single-line TODO must have 0 tasks")
+
+local todo_ts_refactor = results[12]
+assert(
+  todo_ts_refactor.tasks.total == 2 and todo_ts_refactor.tasks.done == 1,
+  "TypeScript refactor must only detect the 2 valid subtasks (1 done), ignoring any[] and T[ ] in middle of sentence. Found total: "
+    .. tostring(todo_ts_refactor.tasks.total)
+)
 
 print("✨ ALL SEARCH & TASK BADGE TESTS PASSED SUCCESSFULLY ✨\n")

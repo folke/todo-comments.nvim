@@ -93,7 +93,7 @@ local defaults = {
     enabled = true, -- enable markdown checkbox detection in TODO blocks
     signs = true, -- show checkbox icons in the sign column
     checkboxes = {
-      todo = { icon = "󰄱 ", color = "info", pattern = "%[%s*%]" }, -- [ ]
+      todo = { icon = "󰄱 ", color = "info", pattern = "%[ %]" }, -- [ ]
       doing = { icon = "󰡖 ", color = "warning", pattern = "%[%/%]" }, -- [/]
       done = { icon = "󰄵 ", color = "hint", pattern = "%[[xX]%]" }, -- [x] or [X]
     },

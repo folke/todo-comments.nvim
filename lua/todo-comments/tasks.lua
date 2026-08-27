@@ -3,6 +3,29 @@ local Highlight = require("todo-comments.highlight")
 
 local M = {}
 
+local function is_valid_checkbox_pos(line, cb_s)
+  if not cb_s or cb_s < 1 then
+    return false
+  end
+  local before = line:sub(1, cb_s - 1)
+  local trimmed = vim.trim(before)
+  if trimmed == "" then
+    return true
+  end
+  local without_comment = trimmed:gsub("^[%#%/%*%-;\"%%!]+", "")
+  without_comment = vim.trim(without_comment)
+  if without_comment == "" then
+    return true
+  end
+  if without_comment:match("^[A-Z]+:?$") then
+    return true
+  end
+  if without_comment:match("^[%-%*%+]%s*$") or without_comment:match("^%d+%.%s*$") then
+    return true
+  end
+  return false
+end
+
 local function is_continuation_comment(line, header_prefix, buf, row, col)
   if not line or line:match("^%s*$") then
     return false
@@ -153,7 +176,8 @@ function M.get_block_stats(filename, lnum, start_col, kw)
         stats.lines = stats.lines + 1
         if kw == "TODO" and tasks_opts and tasks_opts.enabled then
           for state, cb_cfg in pairs(tasks_opts.checkboxes) do
-            if line:find(cb_cfg.pattern) then
+            local cb_s = line:find(cb_cfg.pattern)
+            if cb_s and is_valid_checkbox_pos(line, cb_s) then
               stats.total = stats.total + 1
               if state == "done" then
                 stats.done = stats.done + 1
@@ -195,12 +219,15 @@ function M.toggle()
   end
 
   local new_line = nil
-  if line:find("%[%s*%]") then
-    new_line = line:gsub("%[%s*%]", "[/]", 1)
-  elseif line:find("%[%/%]") then
-    new_line = line:gsub("%[%/%]", "[x]", 1)
-  elseif line:find("%[[xX]%]") then
-    new_line = line:gsub("%[[xX]%]", "[ ]", 1)
+  local cb_s = line:find("%[ %]") or line:find("%[%/%]") or line:find("%[[xX]%]")
+  if cb_s and is_valid_checkbox_pos(line, cb_s) then
+    if line:find("%[ %]") then
+      new_line = line:gsub("%[ %]", "[/]", 1)
+    elseif line:find("%[%/%]") then
+      new_line = line:gsub("%[%/%]", "[x]", 1)
+    elseif line:find("%[[xX]%]") then
+      new_line = line:gsub("%[[xX]%]", "[ ]", 1)
+    end
   else
     -- If line is inside a TODO block without a checkbox, insert [ ]
     local block = M.get_block_at(buf, lnum)

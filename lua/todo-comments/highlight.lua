@@ -348,28 +348,48 @@ function M.highlight(buf, first, last, _event)
         for state, cb_cfg in pairs(tasks_opts.checkboxes) do
           local cb_s, cb_e = line:find(cb_cfg.pattern)
           if cb_s then
-            local name = state:sub(1, 1):upper() .. state:sub(2)
-            add_highlight(buf, Config.ns, "TodoCheckbox" .. name, lnum, cb_s - 1, cb_e)
-
-            if current_block then
-              current_block.total = current_block.total + 1
-              if state == "done" then
-                current_block.done = current_block.done + 1
-              elseif state == "doing" then
-                current_block.doing = current_block.doing + 1
+            local before = line:sub(1, cb_s - 1)
+            local trimmed = vim.trim(before)
+            local is_valid_pos = false
+            if trimmed == "" then
+              is_valid_pos = true
+            else
+              local without_comment = trimmed:gsub("^[%#%/%*%-;\"%%!]+", "")
+              without_comment = vim.trim(without_comment)
+              if
+                without_comment == ""
+                or without_comment:match("^[A-Z]+:?$")
+                or without_comment:match("^[%-%*%+]%s*$")
+                or without_comment:match("^%d+%.%s*$")
+              then
+                is_valid_pos = true
               end
             end
 
-            if tasks_opts.signs and is_multiline then
-              vim.fn.sign_place(
-                0,
-                "todo-signs",
-                "todo-sign-task-" .. state,
-                buf,
-                { lnum = lnum + 1, priority = Config.options.sign_priority }
-              )
+            if is_valid_pos then
+              local name = state:sub(1, 1):upper() .. state:sub(2)
+              add_highlight(buf, Config.ns, "TodoCheckbox" .. name, lnum, cb_s - 1, cb_e)
+
+              if current_block then
+                current_block.total = current_block.total + 1
+                if state == "done" then
+                  current_block.done = current_block.done + 1
+                elseif state == "doing" then
+                  current_block.doing = current_block.doing + 1
+                end
+              end
+
+              if tasks_opts.signs and is_multiline then
+                vim.fn.sign_place(
+                  0,
+                  "todo-signs",
+                  "todo-sign-task-" .. state,
+                  buf,
+                  { lnum = lnum + 1, priority = Config.options.sign_priority }
+                )
+              end
+              break
             end
-            break
           end
         end
       end

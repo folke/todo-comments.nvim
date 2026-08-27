@@ -39,7 +39,7 @@ print("\n--- TEST 3: Toggle from [x] to [ ] ---")
 Tasks.toggle()
 line2 = vim.api.nvim_buf_get_lines(buf, 1, 2, false)[1]
 print("Result:", line2)
-assert(line2:find("%[%s*%]"), "Error: Expected [ ]")
+assert(line2:find("%[%s+%]"), "Error: Expected [ ]")
 
 print("\n--- TEST 4: Comment Block Detection for Folding ---")
 local block = Tasks.get_block_at(buf, 0)

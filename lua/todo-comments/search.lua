@@ -43,14 +43,35 @@ function M.process(lines)
         local tasks_opts = Config.options.tasks
         if kw == "TODO" and tasks_opts and tasks_opts.enabled then
           for state, cb_cfg in pairs(tasks_opts.checkboxes) do
-            if text:find(cb_cfg.pattern) then
-              header_tasks.total = header_tasks.total + 1
-              if state == "done" then
-                header_tasks.done = 1
-              elseif state == "doing" then
-                header_tasks.doing = 1
+            local cb_s = text:find(cb_cfg.pattern)
+            if cb_s then
+              local before = text:sub(1, cb_s - 1)
+              local trimmed = vim.trim(before)
+              local is_valid_pos = false
+              if trimmed == "" then
+                is_valid_pos = true
+              else
+                local without_comment = trimmed:gsub("^[%#%/%*%-;\"%%!]+", "")
+                without_comment = vim.trim(without_comment)
+                if
+                  without_comment == ""
+                  or without_comment:match("^[A-Z]+:?$")
+                  or without_comment:match("^[%-%*%+]%s*$")
+                  or without_comment:match("^%d+%.%s*$")
+                then
+                  is_valid_pos = true
+                end
               end
-              break
+
+              if is_valid_pos then
+                header_tasks.total = 1
+                if state == "done" then
+                  header_tasks.done = 1
+                elseif state == "doing" then
+                  header_tasks.doing = 1
+                end
+                break
+              end
             end
           end
         end

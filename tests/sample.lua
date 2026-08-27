@@ -57,5 +57,11 @@ local function process_payment(user_id, amount)
   -- TODO: Single line todo without any continuation comments
   local transaction_id = "tx_" .. tostring(user_id)
 
+  -- 9. Comment containing array brackets in middle of sentence (should NOT be counted as checkbox)
+  -- TODO: TypeScript refactor
+  -- In TypeScript change prop queryKeyPrefix to baseQueryKey: any[] or T[ ]
+  -- [x] 1. Valid subtask done
+  -- [ ] 2. Valid subtask pending
+
   return true
 end
