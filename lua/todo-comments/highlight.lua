@@ -185,6 +185,70 @@ function M.highlight(buf, first, last, _event)
   ---@type {kw: string, start:integer}?
   local last_match
 
+  ---@type {header_lnum: integer, kw: string, total: integer, done: integer, doing: integer, lines: integer, end_lnum: integer}?
+  local current_block
+
+  local function flush_block()
+    if not current_block then
+      return
+    end
+
+    local hl_opts = Config.options.highlight
+    local tasks_opts = Config.options.tasks
+    local virt_chunks = {}
+
+    -- 1. Folding Icon (General for all keywords when context lines exist)
+    local is_folded = (vim.fn.foldclosed(current_block.header_lnum + 2) ~= -1)
+      or (vim.fn.foldclosed(current_block.header_lnum + 1) ~= -1)
+    if hl_opts and hl_opts.folding and hl_opts.folding.enabled and current_block.lines > 0 then
+      local fold_icon = is_folded and hl_opts.folding.closed_icon or hl_opts.folding.open_icon
+      table.insert(virt_chunks, { fold_icon, "TodoFg" .. current_block.kw })
+    end
+
+    -- 2. Task Progress (Specific to TODO when tasks.progress.enabled and total > 0)
+    if current_block.kw == "TODO" and tasks_opts and tasks_opts.enabled and tasks_opts.progress and tasks_opts.progress.enabled and current_block.total > 0 then
+      local p_opts = tasks_opts.progress
+      local parts = {}
+      if p_opts.show_count then
+        table.insert(parts, string.format(p_opts.count_format or "%d/%d", current_block.done, current_block.total))
+      end
+      if p_opts.show_percent then
+        local pct = math.floor((current_block.done / current_block.total) * 100)
+        table.insert(parts, string.format(p_opts.percent_format or "(%d%%)", pct))
+      end
+      if #parts > 0 then
+        local prog_text = " " .. (p_opts.icon or "") .. table.concat(parts, " ")
+        table.insert(virt_chunks, { prog_text, "TodoProgressRatio" })
+      end
+    end
+
+    -- 3. Context Lines Counter (Shown when folded/hidden or if show_lines == true)
+    if current_block.lines > 0 and hl_opts and hl_opts.context and hl_opts.context.enabled then
+      local ctx_opts = hl_opts.context
+      local should_show = false
+      if ctx_opts.show_lines == "folded" then
+        should_show = is_folded
+      elseif ctx_opts.show_lines == true then
+        should_show = true
+      end
+
+      if should_show then
+        local lines_text = string.format(ctx_opts.lines_format or " (+%d lines)", current_block.lines)
+        table.insert(virt_chunks, { lines_text, "TodoContextInfo" })
+      end
+    end
+
+    if #virt_chunks > 0 then
+      vim.api.nvim_buf_set_extmark(buf, Config.ns, current_block.header_lnum, 0, {
+        virt_text = virt_chunks,
+        virt_text_pos = "eol",
+        priority = 500,
+      })
+    end
+
+    current_block = nil
+  end
+
   for l, line in ipairs(lines) do
     local ok, start, finish, kw = pcall(M.match, line)
     local lnum = first + l - 1
@@ -220,6 +284,24 @@ function M.highlight(buf, first, last, _event)
 
     if kw then
       kw = Config.keywords[kw] or kw
+    end
+
+    if not is_multiline and kw then
+      flush_block()
+      current_block = {
+        header_lnum = lnum,
+        kw = kw,
+        total = 0,
+        done = 0,
+        doing = 0,
+        lines = 0,
+        end_lnum = lnum,
+      }
+    elseif is_multiline and current_block then
+      current_block.lines = current_block.lines + 1
+      current_block.end_lnum = lnum
+    elseif not is_multiline and not kw then
+      flush_block()
     end
 
     local opts = Config.options.keywords[kw]
@@ -260,6 +342,58 @@ function M.highlight(buf, first, last, _event)
         add_highlight(buf, Config.ns, hl_bg, lnum, finish, #line)
       end
 
+      -- Markdown checkbox highlighting & parsing for TODOs
+      local tasks_opts = Config.options.tasks
+      if tasks_opts and tasks_opts.enabled and kw == "TODO" then
+        for state, cb_cfg in pairs(tasks_opts.checkboxes) do
+          local cb_s, cb_e = line:find(cb_cfg.pattern)
+          if cb_s then
+            local before = line:sub(1, cb_s - 1)
+            local trimmed = vim.trim(before)
+            local is_valid_pos = false
+            if trimmed == "" then
+              is_valid_pos = true
+            else
+              local without_comment = trimmed:gsub("^[%#%/%*%-;\"%%!]+", "")
+              without_comment = vim.trim(without_comment)
+              if
+                without_comment == ""
+                or without_comment:match("^[A-Z]+:?$")
+                or without_comment:match("^[%-%*%+]%s*$")
+                or without_comment:match("^%d+%.%s*$")
+              then
+                is_valid_pos = true
+              end
+            end
+
+            if is_valid_pos then
+              local name = state:sub(1, 1):upper() .. state:sub(2)
+              add_highlight(buf, Config.ns, "TodoCheckbox" .. name, lnum, cb_s - 1, cb_e)
+
+              if current_block then
+                current_block.total = current_block.total + 1
+                if state == "done" then
+                  current_block.done = current_block.done + 1
+                elseif state == "doing" then
+                  current_block.doing = current_block.doing + 1
+                end
+              end
+
+              if tasks_opts.signs and is_multiline then
+                vim.fn.sign_place(
+                  0,
+                  "todo-signs",
+                  "todo-sign-task-" .. state,
+                  buf,
+                  { lnum = lnum + 1, priority = Config.options.sign_priority }
+                )
+              end
+              break
+            end
+          end
+        end
+      end
+
       if not is_multiline then
         -- signs
         local show_sign = Config.options.signs
@@ -278,6 +412,8 @@ function M.highlight(buf, first, last, _event)
       end
     end
   end
+
+  flush_block()
 end
 
 function M.is_float(win)
